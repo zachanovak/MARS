@@ -70,7 +70,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    	// components of the menubar
       private JMenu file, run, window, help, edit, settings;
       private JMenuItem fileNew, fileOpen, fileClose, fileCloseAll, fileSave, fileSaveAs, fileSaveAll, fileDumpMemory, filePrint, fileExit;
-      private JMenuItem editUndo, editRedo, editCut, editCopy, editPaste, editFindReplace, editSelectAll;
+      private JMenuItem editUndo, editRedo, editCut, editCopy, editPaste, editFindReplace, editAutoLayout, editSelectAll;
       private JMenuItem runGo, runStep, runBackstep, runReset, runAssemble, runStop, runPause, runClearBreakpoints, runToggleBreakpoints;
       private JCheckBoxMenuItem settingsLabel, settingsPopupInput, settingsValueDisplayBase, settingsAddressDisplayBase,
               settingsExtended, settingsAssembleOnOpen, settingsAssembleAll, settingsWarningsAreErrors, settingsStartAtMain,
@@ -79,7 +79,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       private JMenuItem helpHelp, helpAbout;
          
       // components of the toolbar
-      private JButton Undo, Redo, Cut, Copy, Paste, FindReplace, SelectAll;
+      private JButton Undo, Redo, Cut, Copy, Paste, FindReplace, AutoLayout, SelectAll;
       private JButton New, Open, Save, SaveAs, SaveAll, DumpMemory, Print;
       private JButton Run, Assemble, Reset, Step, Backstep, Stop, Pause;
       private JButton Help;
@@ -92,7 +92,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       private Action fileSaveAsAction, fileSaveAllAction, fileDumpMemoryAction, filePrintAction, fileExitAction;
       EditUndoAction editUndoAction;
       EditRedoAction editRedoAction;
-      private Action editCutAction, editCopyAction, editPasteAction, editFindReplaceAction, editSelectAllAction;
+      private Action editCutAction, editCopyAction, editPasteAction, editFindReplaceAction, editAutoLayoutAction, editSelectAllAction;
       private Action runAssembleAction, runGoAction, runStepAction, runBackstepAction, runResetAction, 
                      runStopAction, runPauseAction, runClearBreakpointsAction, runToggleBreakpointsAction;
       private Action settingsLabelAction, settingsPopupInputAction, settingsValueDisplayBaseAction, settingsAddressDisplayBaseAction,
@@ -309,6 +309,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                									  "Find/Replace", new Integer(KeyEvent.VK_F),
                									  KeyStroke.getKeyStroke( KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()),
                									  mainUI);
+            editAutoLayoutAction = new EditAutoLayoutAction("Auto Layout",
+                                            new ImageIcon(tk.getImage(cs.getResource(Globals.imagesPath+"AutoLayout22.png"))),
+                                                "Automatically format written code", new Integer(KeyEvent.VK_Q),
+                                                    KeyStroke.getKeyStroke( KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()),
+                                                    mainUI);
             editSelectAllAction = new EditSelectAllAction("Select All", 
                                             null, //new ImageIcon(tk.getImage(cs.getResource(Globals.imagesPath+"Find22.png"))),
                									  "Select All", new Integer(KeyEvent.VK_A),
@@ -529,6 +534,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editPaste.setIcon(new ImageIcon(tk.getImage(cs.getResource(Globals.imagesPath+"Paste16.png"))));//"Paste16.gif"))));
          editFindReplace = new JMenuItem(editFindReplaceAction);
          editFindReplace.setIcon(new ImageIcon(tk.getImage(cs.getResource(Globals.imagesPath+"Find16.png"))));//"Paste16.gif"))));
+         editAutoLayout = new JMenuItem(editAutoLayoutAction);
+         editAutoLayout.setIcon(new ImageIcon(tk.getImage(cs.getResource(Globals.imagesPath+"AutoLayout16.png"))));
          editSelectAll = new JMenuItem(editSelectAllAction);
          editSelectAll.setIcon(new ImageIcon(tk.getImage(cs.getResource(Globals.imagesPath+"MyBlank16.gif"))));
          edit.add(editUndo);
@@ -539,6 +546,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          edit.add(editPaste);
          edit.addSeparator();
          edit.add(editFindReplace);
+         edit.add(editAutoLayout);
          edit.add(editSelectAll);
       
          runAssemble = new JMenuItem(runAssembleAction);
@@ -679,6 +687,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          Paste.setText("");
          FindReplace = new JButton(editFindReplaceAction);
          FindReplace.setText("");
+         AutoLayout = new JButton(editAutoLayoutAction);
+         AutoLayout.setText("");
          SelectAll = new JButton(editSelectAllAction);
          SelectAll.setText("");
       	
@@ -714,6 +724,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          toolBar.add(Copy);
          toolBar.add(Paste);
          toolBar.add(FindReplace);
+         toolBar.add(AutoLayout);
          toolBar.add(new JToolBar.Separator());
          toolBar.add(Assemble);
          toolBar.add(Run);   
@@ -793,6 +804,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editCopyAction.setEnabled(false);
          editPasteAction.setEnabled(false);
          editFindReplaceAction.setEnabled(false);
+         editAutoLayoutAction.setEnabled(false);
          editSelectAllAction.setEnabled(false);
          settingsDelayedBranchingAction.setEnabled(true); // added 25 June 2007
          settingsMemoryConfigurationAction.setEnabled(true); // added 21 July 2009
@@ -830,6 +842,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editCopyAction.setEnabled(true);
          editPasteAction.setEnabled(true);
          editFindReplaceAction.setEnabled(true);
+         editAutoLayoutAction.setEnabled(true);
          editSelectAllAction.setEnabled(true);
          settingsDelayedBranchingAction.setEnabled(true); 
          settingsMemoryConfigurationAction.setEnabled(true);
@@ -871,6 +884,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editCopyAction.setEnabled(true);
          editPasteAction.setEnabled(true);
          editFindReplaceAction.setEnabled(true);
+         editAutoLayoutAction.setEnabled(true);
          editSelectAllAction.setEnabled(true);
          settingsDelayedBranchingAction.setEnabled(true); // added 25 June 2007
          settingsMemoryConfigurationAction.setEnabled(true); // added 21 July 2009
@@ -907,6 +921,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editCopyAction.setEnabled(true);
          editPasteAction.setEnabled(true);
          editFindReplaceAction.setEnabled(true);
+         editAutoLayoutAction.setEnabled(true);
          editSelectAllAction.setEnabled(true);
          settingsDelayedBranchingAction.setEnabled(true); // added 25 June 2007
          settingsMemoryConfigurationAction.setEnabled(true); // added 21 July 2009
@@ -943,6 +958,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editCopyAction.setEnabled(true);
          editPasteAction.setEnabled(true);
          editFindReplaceAction.setEnabled(true);
+         editAutoLayoutAction.setEnabled(true);
          editSelectAllAction.setEnabled(true);
          settingsDelayedBranchingAction.setEnabled(true); // added 25 June 2007
          settingsMemoryConfigurationAction.setEnabled(true); // added 21 July 2009
@@ -980,6 +996,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editCopyAction.setEnabled(false);
          editPasteAction.setEnabled(false);
          editFindReplaceAction.setEnabled(false);
+         editAutoLayoutAction.setEnabled(true);
          editSelectAllAction.setEnabled(false);
          settingsDelayedBranchingAction.setEnabled(false); // added 25 June 2007
          settingsMemoryConfigurationAction.setEnabled(false); // added 21 July 2009
@@ -1014,6 +1031,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          editCopyAction.setEnabled(true);
          editPasteAction.setEnabled(true);
          editFindReplaceAction.setEnabled(true);
+         editAutoLayoutAction.setEnabled(true);
          editSelectAllAction.setEnabled(true);
          settingsDelayedBranchingAction.setEnabled(true); // added 25 June 2007
          settingsMemoryConfigurationAction.setEnabled(true); // added 21 July 2009
