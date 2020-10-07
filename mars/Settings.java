@@ -111,7 +111,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       public static final int AUTO_INDENT = 19;
     /** Flag to determine whether a program can write binary code to the text or data segment and
         execute that code.  */
-      public static final int SELF_MODIFYING_CODE_ENABLED = 20;	
+      public static final int SELF_MODIFYING_CODE_ENABLED = 20;
+    /** Flag to control whether or not comma constraint is turned on.  */
+      public static final int COMMA_CONSTRAINT = 21;
+    /** Flag to control whether or not register name constraint is turned on.  */
+      public static final int REGISTER_NAME_CONSTRAINT = 22;
+    /** Flag to control whether or not register usage popup will appear when assembled.  */
+      public static final int POPUP_REGISTER_USAGE = 23;
+    /** Flag to control whether or not instruction subset it turned on.  */
+      public static final int INSTRUCTION_SUBSET = 24;
    
       // NOTE: key sequence must match up with labels above which are used for array indexes!
       private static String[] booleanSettingsKeys = {"ExtendedAssembler", "BareMachine", "AssembleOnOpen", "AssembleAll",
@@ -120,7 +128,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          												"WarningsAreErrors", "ProgramArguments", "DataSegmentHighlighting",
          												"RegistersHighlighting", "StartAtMain", "EditorCurrentLineHighlighting",
          												"PopupInstructionGuidance", "PopupSyscallInput", "GenericTextEditor", 
-         												"AutoIndent", "SelfModifyingCode" };
+         												"AutoIndent", "SelfModifyingCode", "CommaConstraint",
+                                                        "RegisterNameConstraint", "PopupRegisterUsage", "InstructionSubset" };
    
       /** Last resort default values for boolean settings; will use only  if neither
    	 *  the Preferences nor the properties file work. If you wish to change them, 
@@ -129,7 +138,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    	 */
       public static boolean[] defaultBooleanSettingsValues = { // match the above list by position
                                               true, false, false, false, false, true, true, false, false, 
-         												 true, false, false, true, true, false, true, true, false, false, true, false };
+         												 true, false, false, true, true, false, true, true, false, false, true, false,
+                                                         false, false, false, false};
    
       // STRING SETTINGS.  Each array position has associated name.
    	/** Current specified exception handler file (a MIPS assembly source file) */
@@ -1050,7 +1060,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    	 * Set number of letters to be matched by editor's instruction guide before popup generated (if popup enabled).
    	 * Should be 1 or 2.  If 1, the popup will be generated after first letter typed, based on all matches; if 2, 
    	 * the popup will be generated after second letter typed.
-   	 * @param number of letters (should be 1 or 2).
+   	 * @param length of letters (should be 1 or 2).
    	 */		
        public void setEditorPopupPrefixLength(int length) {
          setStringSetting(EDITOR_POPUP_PREFIX_LENGTH, ""+length);
