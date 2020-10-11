@@ -47,6 +47,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     public class InstructionSet
    {
       private ArrayList instructionList;
+      // Used mainly for parser when comma constraint is on
+      private ArrayList instructionListWithCommas;
 	  private ArrayList opcodeMatchMaps;
       private SyscallLoader syscallLoader;
     /**
@@ -55,7 +57,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        public InstructionSet()
       {
          instructionList = new ArrayList();
-      
+         instructionListWithCommas = new ArrayList();
       }
     /**
      * Retrieve the current instruction set.
@@ -3071,7 +3073,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          for (int i = 0; i < instructionList.size(); i++)
          {
             Instruction inst = (Instruction) instructionList.get(i);
-            inst.createExampleTokenList();
+            try {
+                Instruction instClone = (Instruction) inst.clone();
+                instClone.createExampleTokenList(true);
+                instructionListWithCommas.add(instClone);
+            } catch (CloneNotSupportedException e) { }
+            inst.createExampleTokenList(false);
          }
 
 		 HashMap maskMap = new HashMap();
@@ -3189,14 +3196,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        public ArrayList matchOperator(String name)
       {
          ArrayList matchingInstructions = null;
+         boolean commaConstraint = Globals.getSettings() != null &&
+                 Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
+         ArrayList searchList = commaConstraint ? instructionListWithCommas :
+                 instructionList;
         // Linear search for now....
-         for (int i = 0; i < instructionList.size(); i++)
+         for (int i = 0; i < searchList.size(); i++)
          {
-            if (((Instruction) instructionList.get(i)).getName().equalsIgnoreCase(name))
+            if (((Instruction) searchList.get(i)).getName().equalsIgnoreCase(name))
             {
                if (matchingInstructions == null) 
                   matchingInstructions = new ArrayList();
-               matchingInstructions.add(instructionList.get(i));
+               matchingInstructions.add(searchList.get(i));
             }
          }
          return matchingInstructions;
@@ -3213,15 +3224,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        public ArrayList prefixMatchOperator(String name)
       {
          ArrayList matchingInstructions = null;
+         boolean commaConstraint = Globals.getSettings() != null &&
+                 Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
+         ArrayList searchList = commaConstraint ? instructionListWithCommas :
+                 instructionList;
         // Linear search for now....
          if (name != null) {
-            for (int i = 0; i < instructionList.size(); i++)
+            for (int i = 0; i < searchList.size(); i++)
             {
-               if (((Instruction) instructionList.get(i)).getName().toLowerCase().startsWith(name.toLowerCase()))
+               if (((Instruction) searchList.get(i)).getName().toLowerCase().startsWith(name.toLowerCase()))
                {
                   if (matchingInstructions == null) 
                      matchingInstructions = new ArrayList();
-                  matchingInstructions.add(instructionList.get(i));
+                  matchingInstructions.add(searchList.get(i));
                }
             }
          }

@@ -38,7 +38,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * @version August 2003
  */
 
-public abstract class Instruction {
+public abstract class Instruction implements Cloneable {
   /**
    *  Length in bytes of a machine instruction.  MIPS is a RISC architecture
 	*  so all instructions are the same length.  Currently set to 4.
@@ -124,12 +124,24 @@ public abstract class Instruction {
     }
     
     /** Used to build a token list from the example instruction
-    provided as constructor argument.  Parser uses this for syntax checking.  **/
-    protected void createExampleTokenList() {
+    provided as constructor argument.  Parser uses this for syntax checking.
+    If tokenizeCommas is true, the example token list will be created with comma tokens.**/
+    protected void createExampleTokenList(boolean tokenizeCommas) {
         try {
-            tokenList = ((new Tokenizer()).tokenizeExampleInstruction(exampleFormat));
+            tokenList = ((new Tokenizer()).tokenizeExampleInstruction(exampleFormat, tokenizeCommas));
         } catch (ProcessingException pe) {
             System.out.println("CONFIGURATION ERROR: Instruction example \""+exampleFormat+"\" contains invalid token(s).");
         }
+    }
+
+    /**
+     * Creates a separate copy of this Instruction
+     * @return the cloned copy of this object
+     * @throws CloneNotSupportedException
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
     }
 }

@@ -139,4 +139,17 @@ public class BasicInstruction extends Instruction {
 	public int getOpcodeMatch() {
 		return this.opcodeMatch;
 	}
+
+	/**
+	 * Creates a separate copy of this BasicInstruction
+	 * @return the cloned copy of this object
+	 * @throws CloneNotSupportedException
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException
+	{
+		super.clone();
+		return new BasicInstruction(exampleFormat, description,
+				instructionFormat, operationMask, simulationCode);
+	}
 }

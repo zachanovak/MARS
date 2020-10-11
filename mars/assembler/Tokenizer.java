@@ -123,9 +123,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        private ArrayList<SourceLine> processIncludes(MIPSprogram program, Map<String,String> inclFiles) throws ProcessingException {
          ArrayList source = program.getSourceList();
          ArrayList<SourceLine> result = new ArrayList<SourceLine>(source.size());
+         boolean commaConstraint = Globals.getSettings() != null &&
+                 Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
          for (int i=0; i<source.size(); i++) {
             String line = (String) source.get(i);
-            TokenList tl = tokenizeLine(program, i+1, line, false);
+            TokenList tl = tokenizeLine(program, i+1, line, false, commaConstraint);
             boolean hasInclude = false;
             for (int ii=0; ii<tl.size(); ii++) {
                if (tl.get(ii).getValue().equalsIgnoreCase(Directives.INCLUDE.getName()) 
@@ -173,6 +175,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     * specification.
     *
     * @param example The example MIPS instruction to be tokenized.
+    * @param tokenizeCommas Whether comma tokens should be added to the TokenList or not
     * 
     * @return An TokenList representing the tokenized instruction.  Each list member is a Token
     * that represents one language element.
@@ -181,9 +184,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     * contains one or more lexical (i.e. token) errors.
     **/
    
-       public TokenList tokenizeExampleInstruction(String example) throws ProcessingException {
+       public TokenList tokenizeExampleInstruction(String example,
+                                                   boolean tokenizeCommas) throws ProcessingException {
          TokenList result = new TokenList();
-         result = tokenizeLine(sourceMIPSprogram, 0, example, false);
+         result = tokenizeLine(sourceMIPSprogram, 0, example, false, tokenizeCommas);
          if (errors.errorsOccurred()) {
             throw new ProcessingException(errors);
          }
@@ -220,7 +224,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    
    // Modified for release 4.3, to preserve existing API.
        public TokenList tokenizeLine(int lineNum, String theLine) {
-         return tokenizeLine(sourceMIPSprogram, lineNum, theLine, true);
+         return tokenizeLine(sourceMIPSprogram, lineNum, theLine, true,
+                 Globals.getSettings() != null &&
+                         Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT));
       }
 
    /**
@@ -258,7 +264,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        public TokenList tokenizeLine(int lineNum, String theLine, ErrorList callerErrorList, boolean doEqvSubstitutes) {
          ErrorList saveList = this.errors;
          this.errors = callerErrorList;
-         TokenList tokens = this.tokenizeLine(sourceMIPSprogram, lineNum, theLine,doEqvSubstitutes);
+         boolean commaConstraint = Globals.getSettings() != null &&
+                 Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
+         TokenList tokens = this.tokenizeLine(sourceMIPSprogram, lineNum, theLine,doEqvSubstitutes, commaConstraint);
          this.errors = saveList;
          return tokens;
       }	
@@ -272,10 +280,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     * @param lineNum  line number from source code (used in error message)
     * @param theLine String containing source code
     * @param doEqvSubstitutes boolean param set true to perform .eqv substitutions, else false
+    * @param commaConstraint Whether commas should be tokenized or not
     * @return the generated token list for that line
     * 
     **/		
-       public TokenList tokenizeLine(MIPSprogram program, int lineNum, String theLine, boolean doEqvSubstitutes) {
+       public TokenList tokenizeLine(MIPSprogram program, int lineNum, String theLine, boolean doEqvSubstitutes,
+                                     boolean commaConstraint) {
          TokenTypes tokenType;
          TokenList result = new TokenList();
          if (theLine.length() == 0)
@@ -323,8 +333,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         tokenPos = 0;
                      }
                      // Comma token was added with the comma constraint option in the Phobos Menu tool
-                     if (c == ',' && Globals.getSettings() != null &&
-                             Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT)) {
+                     if (c == ',' && commaConstraint) {
                          tokenStartPos = linePos+1;
                          token[tokenPos++] = c;
                          this.processCandidateToken(token, program, lineNum, theLine, tokenPos, tokenStartPos, result);
