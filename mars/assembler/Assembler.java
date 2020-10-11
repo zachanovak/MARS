@@ -4,12 +4,7 @@
    import java.util.Collections;
    import java.util.Comparator;
 
-   import mars.ErrorList;
-   import mars.ErrorMessage;
-   import mars.Globals;
-   import mars.MIPSprogram;
-   import mars.ProcessingException;
-   import mars.ProgramStatement;
+   import mars.*;
    import mars.mips.hardware.AddressErrorException;
    import mars.mips.hardware.Memory;
    import mars.mips.instructions.BasicInstruction;
@@ -181,7 +176,6 @@
     **/
       public ArrayList assemble(ArrayList tokenizedProgramFiles, boolean extendedAssemblerEnabled,
        	boolean warningsAreErrors) throws ProcessingException {
-      	
          if (tokenizedProgramFiles == null || tokenizedProgramFiles.size() == 0)
             return null;
          textAddress = new UserKernelAddressSpace(Memory.textBaseAddress,
@@ -1044,15 +1038,27 @@
           ************************************************************************/
             return;
          }
+
+         boolean commaConstraint = Globals.getSettings() != null &&
+                 Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
       
       // if not in ".word w : n" format, must just be list of one or more values.
          for (int i = tokenStart; i < tokens.size(); i++) {
             token = tokens.get(i);
-            if (Directives.isIntegerDirective(directive)) {
-               storeInteger(token, directive, errors);
-            }
-            if (Directives.isFloatingDirective(directive)) {
-               storeRealNumber(token, directive, errors);
+            // If comma constraint is on, then every odd token in the list must
+            // be a comma.
+            if (commaConstraint && (i - tokenStart) % 2 == 1) {
+               if (token.getType() != TokenTypes.COMMA) {
+                  errors.add(new ErrorMessage(token.getSourceMIPSprogram(),
+                          token.getSourceLine(), token.getStartPos(), "Missing comma"));
+               }
+            } else {
+               if (Directives.isIntegerDirective(directive)) {
+                  storeInteger(token, directive, errors);
+               }
+               if (Directives.isFloatingDirective(directive)) {
+                  storeRealNumber(token, directive, errors);
+               }
             }
          }
          return;

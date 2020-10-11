@@ -251,7 +251,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     * @param lineNum  line number from source code (used in error message)
     * @param theLine String containing source code
     * @param callerErrorList errors will go into this list instead of tokenizer's list.
-    * @param doEqvSubstitutse boolean param set true to perform .eqv substitutions, else false
+    * @param doEqvSubstitutes boolean param set true to perform .eqv substitutions, else false
     * @return the generated token list for that line
     * 
     **/		
@@ -321,6 +321,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                      if (tokenPos > 0) {
                         this.processCandidateToken(token, program, lineNum, theLine, tokenPos, tokenStartPos, result);
                         tokenPos = 0;
+                     }
+                     // Comma token was added with the comma constraint option in the Phobos Menu tool
+                     if (c == ',' && Globals.getSettings() != null &&
+                             Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT)) {
+                         tokenStartPos = linePos+1;
+                         token[tokenPos++] = c;
+                         this.processCandidateToken(token, program, lineNum, theLine, tokenPos, tokenStartPos, result);
+                         tokenPos = 0;
                      }
                      break;
                   // These two guys are special.  Will be recognized as unary if and only if two conditions hold:

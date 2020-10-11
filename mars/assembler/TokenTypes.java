@@ -56,6 +56,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       public static final TokenTypes IDENTIFIER    = new TokenTypes("IDENTIFIER");
       public static final TokenTypes LEFT_PAREN    = new TokenTypes("LEFT_PAREN");
       public static final TokenTypes RIGHT_PAREN   = new TokenTypes("RIGHT_PAREN");
+      public static final TokenTypes COMMA          = new TokenTypes("COMMA");
    //public static final TokenTypes INTEGER       = new TokenTypes("INTEGER");
       public static final TokenTypes INTEGER_5     = new TokenTypes("INTEGER_5");
       public static final TokenTypes INTEGER_16    = new TokenTypes("INTEGER_16");
@@ -125,6 +126,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                   return TokenTypes.PLUS;
                case '-' : 
                   return TokenTypes.MINUS;
+                case ',':
+                  return TokenTypes.COMMA;
             }
          }
 
