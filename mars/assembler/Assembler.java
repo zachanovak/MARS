@@ -224,6 +224,8 @@
          // FIRST PASS OF ASSEMBLER VERIFIES SYNTAX, GENERATES SYMBOL TABLE,
          // INITIALIZES DATA SEGMENT
             ArrayList<ProgramStatement> statements;
+            boolean registerNameConstraint = Globals.getSettings() != null &&
+                    Globals.getSettings().getBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT);
             for (int i = 0; i < tokenList.size(); i++) {
                if (errors.errorLimitExceeded())
                   break; 
@@ -231,6 +233,12 @@
                   Token t = ((TokenList) tokenList.get(i)).get(z);
                	// record this token's original source program and line #. Differs from final, if .include used
                   t.setOriginal(sourceLineList.get(i).getMIPSprogram(),sourceLineList.get(i).getLineNumber());
+                // If Register Name Constraint is being used, make sure no tokens are of type REGISTER_NUMBER
+                  if (registerNameConstraint && t.getType() == TokenTypes.REGISTER_NUMBER) {
+                     errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(), t
+                             .getSourceLine(), t.getStartPos(), "Register numbers like "
+                             + t.getValue() + " can not be used."));
+                  }
                }           	
                statements = this.parseLine((TokenList) tokenList.get(i),
                   sourceLineList.get(i).getSource(), 
