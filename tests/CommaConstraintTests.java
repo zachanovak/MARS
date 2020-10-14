@@ -1,15 +1,13 @@
 package tests;
 
-import mars.Globals;
-import mars.MarsLaunch;
-import mars.Settings;
-import mars.assembler.TokenList;
-import mars.assembler.TokenTypes;
-import mars.assembler.Tokenizer;
+import mars.*;
+import mars.assembler.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 public class CommaConstraintTests
 {
@@ -18,7 +16,7 @@ public class CommaConstraintTests
 
     @BeforeAll
     static void getPreValue() {
-        // Init MarsLaunch so we Globals are initialized
+        // Init MarsLaunch so the Globals are initialized
         MarsLaunch marsLaunch = new MarsLaunch(new String[]{});
         commaConstraint = Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
     }
@@ -85,6 +83,81 @@ public class CommaConstraintTests
         }
 
         Assertions.assertEquals(numOfCommaTokens, 0);
+    }
+
+    @Test
+    void shouldAssembleInstructionWithConstraint()
+    {
+        Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, true);
+        MIPSprogram program = new MIPSprogram() {
+            @Override
+            public ArrayList getSourceList()
+            {
+                ArrayList sourceList = new ArrayList();
+                sourceList.add("li $t1, 1");
+                sourceList.add("addi $v0, $zero, 10");
+                sourceList.add("syscall");
+                return sourceList;
+            }
+        };
+        try {
+            program.tokenize();
+            ArrayList programFiles = new ArrayList();
+            programFiles.add(program);
+            program.assemble(programFiles, true);
+        } catch (ProcessingException ex) {
+            Assertions.fail(ex);
+        }
+    }
+
+    @Test
+    void shouldNotAssembleInstructionWithConstraint()
+    {
+        Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, true);
+        MIPSprogram program = new MIPSprogram() {
+            @Override
+            public ArrayList getSourceList()
+            {
+                ArrayList sourceList = new ArrayList();
+                sourceList.add("li $t1, 1");
+                sourceList.add("addi $v0, $zero 10");
+                sourceList.add("syscall");
+                return sourceList;
+            }
+        };
+        try {
+            program.tokenize();
+            ArrayList programFiles = new ArrayList();
+            programFiles.add(program);
+            program.assemble(programFiles, true);
+
+            Assertions.fail("Assembly failed to throw exception");
+        } catch (ProcessingException ex) { }
+    }
+
+    @Test
+    void shouldAssembleInstructionWithoutConstraint()
+    {
+        Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, false);
+        MIPSprogram program = new MIPSprogram() {
+            @Override
+            public ArrayList getSourceList()
+            {
+                ArrayList sourceList = new ArrayList();
+                sourceList.add("li $t1, 1");
+                sourceList.add("addi $v0, $zero 10");
+                sourceList.add("syscall");
+                return sourceList;
+            }
+        };
+        try {
+            program.tokenize();
+            ArrayList programFiles = new ArrayList();
+            programFiles.add(program);
+            program.assemble(programFiles, true);
+        } catch (ProcessingException ex) {
+            Assertions.fail(ex);
+        }
     }
 
     @AfterAll
