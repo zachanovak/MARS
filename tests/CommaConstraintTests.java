@@ -9,16 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-public class CommaConstraintTests
-{
-    // Used to restore existing value after tests mess with the value
-    private static boolean commaConstraint;
+public class CommaConstraintTests {
 
     @BeforeAll
     static void getPreValue() {
         // Init MarsLaunch so the Globals are initialized
-        MarsLaunch marsLaunch = new MarsLaunch(new String[]{});
-        commaConstraint = Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
+        TestGlobals.initMarsLaunch();
+        TestGlobals.commaConstraint = Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT);
     }
 
     @Test
@@ -86,13 +83,11 @@ public class CommaConstraintTests
     }
 
     @Test
-    void shouldAssembleInstructionWithConstraint()
-    {
+    void shouldAssembleInstructionWithConstraint() {
         Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, true);
         MIPSprogram program = new MIPSprogram() {
             @Override
-            public ArrayList getSourceList()
-            {
+            public ArrayList getSourceList() {
                 ArrayList sourceList = new ArrayList();
                 sourceList.add("li $t1, 1");
                 sourceList.add("addi $v0, $zero, 10");
@@ -111,13 +106,11 @@ public class CommaConstraintTests
     }
 
     @Test
-    void shouldNotAssembleInstructionWithConstraint()
-    {
+    void shouldNotAssembleInstructionWithConstraint() {
         Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, true);
         MIPSprogram program = new MIPSprogram() {
             @Override
-            public ArrayList getSourceList()
-            {
+            public ArrayList getSourceList() {
                 ArrayList sourceList = new ArrayList();
                 sourceList.add("li $t1, 1");
                 sourceList.add("addi $v0, $zero 10");
@@ -136,13 +129,11 @@ public class CommaConstraintTests
     }
 
     @Test
-    void shouldAssembleInstructionWithoutConstraint()
-    {
+    void shouldAssembleInstructionWithoutConstraint() {
         Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, false);
         MIPSprogram program = new MIPSprogram() {
             @Override
-            public ArrayList getSourceList()
-            {
+            public ArrayList getSourceList() {
                 ArrayList sourceList = new ArrayList();
                 sourceList.add("li $t1, 1");
                 sourceList.add("addi $v0, $zero 10");
@@ -162,6 +153,7 @@ public class CommaConstraintTests
 
     @AfterAll
     static void restorePreValue() {
-        Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, commaConstraint);
+        Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT,
+                TestGlobals.commaConstraint);
     }
 }

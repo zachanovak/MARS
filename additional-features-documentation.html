@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <title>Additional Features Documentation</title>
+    </head>
+    <body>
+        <center>
+            <h1>Additional Features Documentation</h1>
+        </center>
+        <p>The additional features include the Phobos Menu (with 4 new features) and the Auto Layout feature which is accessible directly from the main GUI.</p>
+        <ul>
+            <li>
+                <h2>Phobos Menu</h2>
+                <p>To access the Phobos Menu in MARS go to <b>Tools</b>  -> <b>Phobos Menu</b></p>
+                <ol>
+                    <li>
+                        <h3>Comma Constraint</h3>
+                        <p>Tick the checkbox next to Comma Constraint in the Phobos menu to enable this feature. When enabled, this feature strictly requires commas to be used in instructions and arrays for the program to assemble.</p>
+                        <p>Example usage:</p>
+                        <pre>
+  addi $t1 $t0 1    # This line will NOT assemble because of the lack of commas
+  addi $t1, $t0, 1  # This line WILL assemble because it has the correct number of commas</pre>
+                        <p>Note that if the Comma Constraint feature were to be disabled, the above two lines would both assemble.</p>
+                    </li>
+                    <li>
+                        <h3>Register Name Constraint</h3>
+                        <p>Tick the checkbox next to Register Name Constraint in the Phobos menu to enable this feature. When enabled, this feature strictly requires register names to be used, rather than register numbers, for the program to assemble.</p>
+                        <p>Example usage:</p>
+                        <pre>
+  addi $1, $0, 1    # This line will NOT assemble because register numbers are being used
+  addi $t1, $t0, 1  # This line WILL assemble because register names are being used</pre>
+                        <p>Note that if the Register Name Constraint feature were to be disabled, the above two lines would both assemble (albeit, the first line would then be using possibly different registers than intended).</p>
+
+                    </li>
+                    <li><h3>Instruction Subset</h3></li>
+                    <li><h3>Show Register Usage</h3></li>
+                </ol>
+            </li>
+            <li>
+                <h3>Auto Layout Feature</h3>
+                <p>There are three ways one can use the Auto Layout feature in MARS while editing a file:</p>
+                <ul>
+                    <li>Go to <b>Edit</b> -> <b>Auto Layout</b></li>
+                    <li>Press the <img src="images/AutoLayout22.png"/>Auto Layout icon in the icon menu below the top menu bar </li>
+                    <li>Press <b>Ctrl</b> + <b>Q</b></li>
+                </ul>
+            </li>
+        </ul>
+
+    </body>
+</html>

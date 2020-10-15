@@ -8,26 +8,21 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-public class RegisterNameConstraintTests
-{
-    // Used to restore existing value after tests mess with the value
-    private static boolean registerNameConstraint;
+public class RegisterNameConstraintTests {
 
     @BeforeAll
     static void getPreValue() {
         // Init MarsLaunch so the Globals are initialized
-        MarsLaunch marsLaunch = new MarsLaunch(new String[]{});
-        registerNameConstraint = Globals.getSettings().getBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT);
+        TestGlobals.initMarsLaunch();
+        TestGlobals.registerNameConstraint = Globals.getSettings().getBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT);
     }
 
     @Test
-    void shouldAssembleInstructionWithConstraint()
-    {
+    void shouldAssembleInstructionWithConstraint() {
         Globals.getSettings().setBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT, true);
         MIPSprogram program = new MIPSprogram() {
             @Override
-            public ArrayList getSourceList()
-            {
+            public ArrayList getSourceList() {
                 ArrayList sourceList = new ArrayList();
                 sourceList.add("li $t1, 1");
                 sourceList.add("addi $v0, $zero, 10");
@@ -46,13 +41,11 @@ public class RegisterNameConstraintTests
     }
 
     @Test
-    void shouldNotAssembleInstructionWithConstraint()
-    {
+    void shouldNotAssembleInstructionWithConstraint() {
         Globals.getSettings().setBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT, true);
         MIPSprogram program = new MIPSprogram() {
             @Override
-            public ArrayList getSourceList()
-            {
+            public ArrayList getSourceList() {
                 ArrayList sourceList = new ArrayList();
                 sourceList.add("li $t1, 1");
                 sourceList.add("addi $0, $zero, 10");
@@ -71,13 +64,11 @@ public class RegisterNameConstraintTests
     }
 
     @Test
-    void shouldAssembleInstructionWithoutConstraint()
-    {
+    void shouldAssembleInstructionWithoutConstraint() {
         Globals.getSettings().setBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT, false);
         MIPSprogram program = new MIPSprogram() {
             @Override
-            public ArrayList getSourceList()
-            {
+            public ArrayList getSourceList() {
                 ArrayList sourceList = new ArrayList();
                 sourceList.add("li $t1, 1");
                 sourceList.add("addi $0, $zero, 10");
@@ -97,6 +88,7 @@ public class RegisterNameConstraintTests
 
     @AfterAll
     static void restorePreValue() {
-        Globals.getSettings().setBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT, registerNameConstraint);
+        Globals.getSettings().setBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT,
+                TestGlobals.registerNameConstraint);
     }
 }
