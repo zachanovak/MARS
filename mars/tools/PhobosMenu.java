@@ -6,13 +6,17 @@ import mars.Settings;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * A Mars Tool Menu that has multiple additional features in MARS. The Phobos Menu
+ * includes features such as Comma Constraint, Register Name Constraint,
+ * Instruction Subset, and Show Register Usage on assemble.
+ */
 public class PhobosMenu implements MarsTool {
+    // Used to set the size of the menu
     private static final int PREFRERRED_WIDTH = 712;
     private static final int PREFERRED_HEIGHT = 652;
 
@@ -21,6 +25,10 @@ public class PhobosMenu implements MarsTool {
         return "Phobos Menu";
     }
 
+    /**
+     * Called when the tool is selected from the Tools menu.
+     * Starts the menu.
+     */
     @Override
     public void action() {
         PhobosRunnable pr = new PhobosRunnable();
@@ -28,9 +36,15 @@ public class PhobosMenu implements MarsTool {
         t1.start();
     }
 
+    /**
+     * Runnable inner class for when the tool is invoked.
+     */
     private class PhobosRunnable implements Runnable {
         JPanel panel;
 
+        /**
+         * Constructor used to initiate the GUI of the menu
+         */
         public PhobosRunnable() {
             final JDialog frame = new JDialog(Globals.getGui(),"Phobos Menu");
             panel = new JPanel(new BorderLayout());
@@ -48,8 +62,8 @@ public class PhobosMenu implements MarsTool {
                     });
 
             frame.getContentPane().add(panel);
-            frame.setLocationRelativeTo(null);
             frame.pack();
+            frame.setLocationRelativeTo(null);
             frame.setVisible(true);
             frame.setTitle("Phobos Menu");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,6 +71,10 @@ public class PhobosMenu implements MarsTool {
             frame.setVisible(true);
         }
 
+        /**
+         * Initiates the options to enable/disable the features.
+         * @return JPanel with options on it
+         */
         private JPanel initOptionsPanel() {
             JPanel optionsPanel = new JPanel();
             optionsPanel.setLayout(new BorderLayout());
@@ -64,7 +82,6 @@ public class PhobosMenu implements MarsTool {
 
             JPanel constraintsPanel = new JPanel();
             TitledBorder cTitledBorder = new TitledBorder("Constraints");
-            //cTitledBorder.setTitleJustification(TitledBorder.CENTER);
             constraintsPanel.setBorder(cTitledBorder);
             GridLayout cGridLayout = new GridLayout(3, 1);
             constraintsPanel.setLayout(cGridLayout);
@@ -85,7 +102,6 @@ public class PhobosMenu implements MarsTool {
 
             JPanel option3Panel = new JPanel();
             TitledBorder isTitledBorder = new TitledBorder("Instruction Subset");
-            //isTitledBorder.setTitleJustification(TitledBorder.CENTER);
             option3Panel.setBorder(isTitledBorder);
             JCheckBox option3CheckBox = new JCheckBox("Enabled");
             option3CheckBox.setToolTipText("Check to allow/disallow certain instructions from being used.");

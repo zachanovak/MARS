@@ -1,5 +1,7 @@
    package mars.venus;
    import mars.*;
+   import mars.tools.PhobosMenu;
+   import mars.tools.RegisterUsageWindow;
    import mars.util.*;
    import mars.mips.hardware.*;
    import java.util.*;
@@ -120,6 +122,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                mainUI.setReset(true);
                mainUI.setStarted(false);
                mainUI.getMainPane().setSelectedComponent(executePane);
+
+               boolean registerUsagePopup = Globals.getSettings() != null &&
+                       Globals.getSettings().getBooleanSetting(Settings.POPUP_REGISTER_USAGE);
+               if (registerUsagePopup && Settings.registerUsageMap != null) {
+                   RegisterUsageWindow ruw = new RegisterUsageWindow();
+                   Thread t1 = new Thread(ruw);
+                   t1.start();
+               }
             	
             // Aug. 24, 2005 Ken Vollmar
                SystemIO.resetFiles( );  // Ensure that I/O "file descriptors" are initialized for a new program run

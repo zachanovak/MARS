@@ -140,6 +140,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                                               true, false, false, false, false, true, true, false, false, 
          												 true, false, false, true, true, false, true, true, false, false, true, false,
                                                          false, false, false, false};
+
+      /** Used when POPUP_REGISTER_USAGE flag is set to true. Contains a map of registers and how
+          many are used when a program is assembled.
+       */
+      public static HashMap<String, Integer> registerUsageMap;
    
       // STRING SETTINGS.  Each array position has associated name.
    	/** Current specified exception handler file (a MIPS assembly source file) */

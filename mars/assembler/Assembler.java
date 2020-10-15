@@ -3,10 +3,13 @@
    import java.util.ArrayList;
    import java.util.Collections;
    import java.util.Comparator;
+   import java.util.HashMap;
 
    import mars.*;
    import mars.mips.hardware.AddressErrorException;
    import mars.mips.hardware.Memory;
+   import mars.mips.hardware.Register;
+   import mars.mips.hardware.RegisterFile;
    import mars.mips.instructions.BasicInstruction;
    import mars.mips.instructions.ExtendedInstruction;
    import mars.mips.instructions.Instruction;
@@ -226,6 +229,13 @@
             ArrayList<ProgramStatement> statements;
             boolean registerNameConstraint = Globals.getSettings() != null &&
                     Globals.getSettings().getBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT);
+            boolean countRegisters = Globals.getSettings() != null &&
+                    Globals.getSettings().getBooleanSetting(Settings.POPUP_REGISTER_USAGE);
+            HashMap<String, Integer> registers = null;
+            if (countRegisters) {
+               registers = new HashMap<>();
+               Settings.registerUsageMap = registers;
+            }
             for (int i = 0; i < tokenList.size(); i++) {
                if (errors.errorLimitExceeded())
                   break; 
@@ -238,6 +248,25 @@
                      errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(), t
                              .getSourceLine(), t.getStartPos(), "Register numbers like "
                              + t.getValue() + " can not be used."));
+                  }
+                  if (countRegisters) {
+                     if (t.getType() == TokenTypes.REGISTER_NAME) {
+                        // If register name, then the token value can just be used as the key
+                        // Add 1 to whatever number is under the key (set to 1 if first time key is entered)
+                        registers.put(t.getValue(),
+                                registers.get(t.getValue()) == null ? 1 : registers.get(t.getValue()) + 1);
+                     } else if (t.getType() == TokenTypes.REGISTER_NUMBER) {
+                        // If register number, then the token value is used to search registers to find the name
+                        // Add 1 to whatever number is under the key (set to 1 if first time key is entered)
+                        int regNum = Integer.parseInt(t.getValue().substring(1));
+                        for (Register register : RegisterFile.getRegisters()) {
+                           if (register.getNumber() == regNum) {
+                              registers.put(register.getName(),
+                                      registers.get(register.getName()) == null ? 1 : registers.get(register.getName()) + 1);
+                              break;
+                           }
+                        }
+                     }
                   }
                }           	
                statements = this.parseLine((TokenList) tokenList.get(i),
