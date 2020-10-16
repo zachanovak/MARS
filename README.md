@@ -18,7 +18,7 @@
 
 ## Documentation
 * [Original MARS Documentation](http://courses.missouristate.edu/KenVollmar/MARS/Help/MarsHelpIntro.html)
-* Additional Features Documentation (IN PROGRESS)
+* [Additional Features Documentation](additional-features-documentation.md)(IN PROGRESS)
 
 ## License
 * [MIT](https://opensource.org/licenses/mit-license.html)
