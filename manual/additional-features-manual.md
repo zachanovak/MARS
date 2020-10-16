@@ -73,7 +73,7 @@ GUI.
     while editing a file:
 
     -   Go to **Edit** -\> **Auto Layout**
-    -   Press the ![](`images/AutoLayout22.png)Auto Layout icon in the
+    -   Press the ![](../images/AutoLayout22.png)Auto Layout icon in the
         icon menu below the top menu bar
     -   Press **Ctrl** + **Q**
 
