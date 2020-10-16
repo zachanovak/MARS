@@ -286,6 +286,31 @@ public class RegisterUsageTests {
     }
 
     @Test
+    void shouldNotCountRegistersMultipleTimesFromLoops() {
+        Globals.getSettings().setBooleanSetting(Settings.POPUP_REGISTER_USAGE, true);
+        MIPSprogram program = new MIPSprogram() {
+            @Override
+            public ArrayList getSourceList() {
+                ArrayList sourceList = new ArrayList();
+                sourceList.add("LOOP:");
+                sourceList.add("li $t0, 1");
+                sourceList.add("j LOOP");
+                return sourceList;
+            }
+        };
+        try {
+            program.tokenize();
+            ArrayList programFiles = new ArrayList();
+            programFiles.add(program);
+            program.assemble(programFiles, true);
+        } catch (ProcessingException ex) {
+            Assertions.fail(ex);
+        }
+        Assertions.assertNotNull(Settings.registerUsageMap);
+        Assertions.assertEquals(1, Settings.registerUsageMap.get("$t0"));
+    }
+
+    @Test
     void shouldNotCountValuesFromOldPrograms() {
         Globals.getSettings().setBooleanSetting(Settings.POPUP_REGISTER_USAGE, true);
         MIPSprogram program = new MIPSprogram() {

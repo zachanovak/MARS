@@ -1,5 +1,5 @@
-Additional Features Documentation
-=================================
+Additional Features User Manual
+===============================
 
 The additional features include the Phobos Menu (with 4 new features)
 and the Auto Layout feature which is accessible directly from the main
@@ -11,10 +11,12 @@ GUI.
     To access the Phobos Menu in MARS go to **Tools** -\> **Phobos
     Menu**
 
+    ![](phobos-menu.png)
+
     1.  ### Comma Constraint
 
-        Tick the checkbox next to Comma Constraint in the Phobos menu to
-        enable this feature. When enabled, this feature strictly
+        Tick the checkbox next to "Comma Constraint" in the Phobos menu
+        to enable this feature. When enabled, this feature strictly
         requires commas to be used in instructions and arrays for the
         program to assemble.
 
@@ -28,10 +30,10 @@ GUI.
 
     2.  ### Register Name Constraint
 
-        Tick the checkbox next to Register Name Constraint in the Phobos
-        menu to enable this feature. When enabled, this feature strictly
-        requires register names to be used, rather than register
-        numbers, for the program to assemble.
+        Tick the checkbox next to "Register Name Constraint" in the
+        Phobos menu to enable this feature. When enabled, this feature
+        strictly requires register names to be used, rather than
+        register numbers, for the program to assemble.
 
         Example usage:
 
@@ -47,13 +49,31 @@ GUI.
 
     4.  ### Show Register Usage
 
+        Tick the checkbox next to "Show Register Usage on Assemble" in
+        the Phobos menu to enable this feature. When enabled, this
+        feature will show a popup window when a program is successfully
+        assembled. The popup window will have multiple tabs that one can
+        select (or move between using the **arrow keys**) to see bar
+        charts on the amount of registers that the assembled program
+        contains.
+
+        Example usage:
+
+        ![](bar-chart-example.png)
+
+        The above image shows the usage of temporary registers. Using
+        this image alone, one can see how many of each temporary
+        registers are used within the program. According to the image,
+        the program contains six \$t3 registers, one \$t2 register, and
+        zero \$t8 registers.
+
 -   ### Auto Layout Feature
 
     There are three ways one can use the Auto Layout feature in MARS
     while editing a file:
 
     -   Go to **Edit** -\> **Auto Layout**
-    -   Press the ![](images/AutoLayout22.png)Auto Layout icon in the
+    -   Press the ![](`images/AutoLayout22.png)Auto Layout icon in the
         icon menu below the top menu bar
     -   Press **Ctrl** + **Q**
 

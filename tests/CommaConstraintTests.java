@@ -106,6 +106,29 @@ public class CommaConstraintTests {
     }
 
     @Test
+    void shouldAssembleInstructionWithConstraint2() {
+        Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, true);
+        MIPSprogram program = new MIPSprogram() {
+            @Override
+            public ArrayList getSourceList() {
+                ArrayList sourceList = new ArrayList();
+                sourceList.add(".data");
+                sourceList.add("list: .word 3, 0, 1, 2, 6, -2, 4, 7, 3, 7");
+                sourceList.add(".text");
+                return sourceList;
+            }
+        };
+        try {
+            program.tokenize();
+            ArrayList programFiles = new ArrayList();
+            programFiles.add(program);
+            program.assemble(programFiles, true);
+        } catch (ProcessingException ex) {
+            Assertions.fail(ex);
+        }
+    }
+
+    @Test
     void shouldNotAssembleInstructionWithConstraint() {
         Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, true);
         MIPSprogram program = new MIPSprogram() {
@@ -115,6 +138,29 @@ public class CommaConstraintTests {
                 sourceList.add("li $t1, 1");
                 sourceList.add("addi $v0, $zero 10");
                 sourceList.add("syscall");
+                return sourceList;
+            }
+        };
+        try {
+            program.tokenize();
+            ArrayList programFiles = new ArrayList();
+            programFiles.add(program);
+            program.assemble(programFiles, true);
+
+            Assertions.fail("Assembly failed to throw exception");
+        } catch (ProcessingException ex) { }
+    }
+
+    @Test
+    void shouldNotAssembleInstructionWithConstraint2() {
+        Globals.getSettings().setBooleanSetting(Settings.COMMA_CONSTRAINT, true);
+        MIPSprogram program = new MIPSprogram() {
+            @Override
+            public ArrayList getSourceList() {
+                ArrayList sourceList = new ArrayList();
+                sourceList.add(".data");
+                sourceList.add("list: .word 3, 0, 1, 2, 6, -2, 4 7, 3, 7");
+                sourceList.add(".text");
                 return sourceList;
             }
         };
