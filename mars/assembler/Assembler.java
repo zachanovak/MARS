@@ -235,6 +235,8 @@
             if (countRegisters) {
                registers = new HashMap<>();
                Settings.registerUsageMap = registers;
+            } else {
+               Settings.registerUsageMap = null;
             }
             for (int i = 0; i < tokenList.size(); i++) {
                if (errors.errorLimitExceeded())

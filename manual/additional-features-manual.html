@@ -1,21 +1,22 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-        <title>Additional Features Documentation</title>
+        <title>Additional Features User Manual</title>
     </head>
     <body>
         <center>
-            <h1>Additional Features Documentation</h1>
+            <h1>Additional Features User Manual</h1>
         </center>
         <p>The additional features include the Phobos Menu (with 4 new features) and the Auto Layout feature which is accessible directly from the main GUI.</p>
         <ul>
             <li>
                 <h2>Phobos Menu</h2>
                 <p>To access the Phobos Menu in MARS go to <b>Tools</b>  -> <b>Phobos Menu</b></p>
+                <img src="phobos-menu.png" width="284" height="264"/>
                 <ol>
                     <li>
                         <h3>Comma Constraint</h3>
-                        <p>Tick the checkbox next to Comma Constraint in the Phobos menu to enable this feature. When enabled, this feature strictly requires commas to be used in instructions and arrays for the program to assemble.</p>
+                        <p>Tick the checkbox next to "Comma Constraint" in the Phobos menu to enable this feature. When enabled, this feature strictly requires commas to be used in instructions and arrays for the program to assemble.</p>
                         <p>Example usage:</p>
                         <pre>
   addi $t1 $t0 1    # This line will NOT assemble because of the lack of commas
@@ -24,7 +25,7 @@
                     </li>
                     <li>
                         <h3>Register Name Constraint</h3>
-                        <p>Tick the checkbox next to Register Name Constraint in the Phobos menu to enable this feature. When enabled, this feature strictly requires register names to be used, rather than register numbers, for the program to assemble.</p>
+                        <p>Tick the checkbox next to "Register Name Constraint" in the Phobos menu to enable this feature. When enabled, this feature strictly requires register names to be used, rather than register numbers, for the program to assemble.</p>
                         <p>Example usage:</p>
                         <pre>
   addi $1, $0, 1    # This line will NOT assemble because register numbers are being used
@@ -33,7 +34,13 @@
 
                     </li>
                     <li><h3>Instruction Subset</h3></li>
-                    <li><h3>Show Register Usage</h3></li>
+                    <li>
+                        <h3>Show Register Usage</h3>
+                        <p>Tick the checkbox next to "Show Register Usage on Assemble" in the Phobos menu to enable this feature. When enabled, this feature will show a popup window when a program is successfully assembled. The popup window will have multiple tabs that one can select (or move between using the <b>arrow keys</b>) to see bar charts on the amount of registers that the assembled program contains.</p>
+                        <p>Example usage:</p>
+                        <img src="bar-chart-example.png" width="725" height="555"/>
+                        <p>The above image shows the usage of temporary registers. Using this image alone, one can see how many of each temporary registers are used within the program. According to the image, the program contains six $t3 registers, one $t2 register, and zero $t8 registers.</p>
+                    </li>
                 </ol>
             </li>
             <li>
