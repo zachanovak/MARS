@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -111,6 +113,11 @@ public class PhobosMenu implements MarsTool {
             option3Panel.add(option3CheckBox);
             JButton configureButton = new JButton("Configure Subset");
             configureButton.setToolTipText("Configure what instructions should be allowed/disallowed.");
+            /*configureButton.addActionListener(actionEvent -> {
+                InstructionSubsetWindow isw = new InstructionSubsetWindow();
+                Thread t1 = new Thread(isw);
+                t1.start();
+            });*/
             option3Panel.add(configureButton);
             constraintsPanel.add(option3Panel);
 
