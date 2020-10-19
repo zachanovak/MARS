@@ -16,9 +16,6 @@ import java.awt.event.WindowEvent;
  * Instruction Subset, and Show Register Usage on assemble.
  */
 public class PhobosMenu implements MarsTool {
-    // Used to set the size of the menu
-    private static final int PREFRERRED_WIDTH = 712;
-    private static final int PREFERRED_HEIGHT = 652;
 
     @Override
     public String getName() {
@@ -67,7 +64,7 @@ public class PhobosMenu implements MarsTool {
             frame.setVisible(true);
             frame.setTitle("Phobos Menu");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setPreferredSize(new Dimension(PREFRERRED_WIDTH, PREFERRED_HEIGHT));
+
             frame.setVisible(true);
         }
 

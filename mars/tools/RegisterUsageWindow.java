@@ -14,9 +14,6 @@ import java.awt.event.WindowEvent;
  * register is written in the program.
  */
 public class RegisterUsageWindow implements Runnable {
-    // Used to set the size of the menu
-    private static final int PREFRERRED_WIDTH = 712;
-    private static final int PREFERRED_HEIGHT = 652;
     // Each array in this 2D array is a tab of the window
     private static final String[][] allRegisterNames = {
             {"$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$t9"},
@@ -51,7 +48,6 @@ public class RegisterUsageWindow implements Runnable {
         frame.setVisible(true);
         frame.setTitle("Register Usage Window");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(PREFRERRED_WIDTH, PREFERRED_HEIGHT));
         frame.setVisible(true);
     }
 

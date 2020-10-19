@@ -1061,6 +1061,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        public void setMemoryConfiguration(String config) {
          setStringSetting(MEMORY_CONFIGURATION, config);
       }
+
+      public void setInstructionSubsetString(String subsetString) {
+           setStringSetting(INSTRUCTION_SUBSET_LIST, subsetString);
+      }
       
    	/**
    	 * Set the caret blinking rate in milliseconds.  Rate of 0 means no blinking.
@@ -1353,7 +1357,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     // Populate the ArrayList instructionSubset with the String setting that was saved to preferences
       private void populateInstructionSubsetList() {
            String instructions = getInstructionSubsetString();
-           instructionSubset = new ArrayList<>(Arrays.asList(instructions.split("~")));
+           String[] instructionArray = instructions.split("~");
+           if (instructionArray.length == 1 && instructionArray[0].equals(""))
+               instructionSubset = new ArrayList<>();
+           else
+               instructionSubset = new ArrayList<>(Arrays.asList(instructions.split("~")));
       }
    	
    	
