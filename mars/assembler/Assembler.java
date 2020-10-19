@@ -232,6 +232,10 @@
             boolean countRegisters = Globals.getSettings() != null &&
                     Globals.getSettings().getBooleanSetting(Settings.POPUP_REGISTER_USAGE);
             HashMap<String, Integer> registers = null;
+            boolean instructionSubset = Globals.getSettings() != null &&
+                    Globals.getSettings().getBooleanSetting(Settings.INSTRUCTION_SUBSET);
+            boolean whitelist = Globals.getSettings() != null &&
+                    Globals.getSettings().getBooleanSetting(Settings.INSTRUCTION_SUBSET_WHITELIST);
             if (countRegisters) {
                registers = new HashMap<>();
                Settings.registerUsageMap = registers;
@@ -247,8 +251,8 @@
                   t.setOriginal(sourceLineList.get(i).getMIPSprogram(),sourceLineList.get(i).getLineNumber());
                 // If Register Name Constraint is being used, make sure no tokens are of type REGISTER_NUMBER
                   if (registerNameConstraint && t.getType() == TokenTypes.REGISTER_NUMBER) {
-                     errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(), t
-                             .getSourceLine(), t.getStartPos(), "Register numbers like "
+                     errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(),
+                             t.getSourceLine(), t.getStartPos(), "Register numbers like "
                              + t.getValue() + " can not be used."));
                   }
                   if (countRegisters) {
@@ -268,6 +272,19 @@
                               break;
                            }
                         }
+                     }
+                  }
+                  if (instructionSubset) {
+                     if (whitelist && t.getType() == TokenTypes.OPERATOR &&
+                             !Settings.instructionSubset.contains(t.getValue())) {
+                        // If instruction is not on whitelist, throw error
+                        errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(),
+                                t.getSourceLine(), t.getStartPos(), "Instruction " + t.getValue() + " is not allowed because it is not on the whitelist."));
+                     } else if (!whitelist && t.getType() == TokenTypes.OPERATOR &&
+                             Settings.instructionSubset.contains(t.getValue())) {
+                        // If instruction is on blacklist, throw error
+                        errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(),
+                                t.getSourceLine(), t.getStartPos(), "Instruction " + t.getValue() + " is not allowed because it is on the blacklist."));
                      }
                   }
                }           	
