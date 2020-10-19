@@ -120,6 +120,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       public static final int POPUP_REGISTER_USAGE = 23;
     /** Flag to control whether or not instruction subset it turned on.  */
       public static final int INSTRUCTION_SUBSET = 24;
+    /** Flag to control whether instruction subset is a whitelist or blacklist. */
+      public static final int INSTRUCTION_SUBSET_WHITELIST = 25;
    
       // NOTE: key sequence must match up with labels above which are used for array indexes!
       private static String[] booleanSettingsKeys = {"ExtendedAssembler", "BareMachine", "AssembleOnOpen", "AssembleAll",
@@ -129,7 +131,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          												"RegistersHighlighting", "StartAtMain", "EditorCurrentLineHighlighting",
          												"PopupInstructionGuidance", "PopupSyscallInput", "GenericTextEditor", 
          												"AutoIndent", "SelfModifyingCode", "CommaConstraint",
-                                                        "RegisterNameConstraint", "PopupRegisterUsage", "InstructionSubset" };
+                                                        "RegisterNameConstraint", "PopupRegisterUsage", "InstructionSubset", "InstructionSubsetWhitelist" };
    
       /** Last resort default values for boolean settings; will use only  if neither
    	 *  the Preferences nor the properties file work. If you wish to change them, 
@@ -139,12 +141,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       public static boolean[] defaultBooleanSettingsValues = { // match the above list by position
                                               true, false, false, false, false, true, true, false, false, 
          												 true, false, false, true, true, false, true, true, false, false, true, false,
-                                                         false, false, false, false};
+                                                         false, false, false, false, false};
 
       /** Used when POPUP_REGISTER_USAGE flag is set to true. Contains a map of registers and how
           many are used when a program is assembled.
        */
       public static HashMap<String, Integer> registerUsageMap;
+      /** Used when INSTRUCTION_SUBSET flag is set to true. Contains a list of the instructions
+       * in the subset */
+      public static ArrayList<String> instructionSubset;
    
       // STRING SETTINGS.  Each array position has associated name.
    	/** Current specified exception handler file (a MIPS assembly source file) */
@@ -161,15 +166,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       public static final int EDITOR_TAB_SIZE = 5;
    	/** Number of letters to be matched by editor's instruction guide before popup generated (if popup enabled) */
       public static final int EDITOR_POPUP_PREFIX_LENGTH = 6;
+    /** Subset of instructions in the form of a String, each instruction separated by the char '~' */
+      public static final int INSTRUCTION_SUBSET_LIST = 7;
    	// Match the above by position.
-      private static final String[] stringSettingsKeys = { "ExceptionHandler", "TextColumnOrder", "LabelSortState", "MemoryConfiguration", "CaretBlinkRate", "EditorTabSize", "EditorPopupPrefixLength" };
+      private static final String[] stringSettingsKeys = { "ExceptionHandler", "TextColumnOrder", "LabelSortState", "MemoryConfiguration", "CaretBlinkRate", "EditorTabSize", "EditorPopupPrefixLength",
+            "InstructionSubsetList" };
    
       /** Last resort default values for String settings; 
    	 *  will use only if neither the Preferences nor the properties file work.
    	 *  If you wish to change, do so before instantiating the Settings object.
    	 *  Must match key by list position.
    	 */
-      private static String[] defaultStringSettingsValues = { "", "0 1 2 3 4", "0", "", "500", "8", "2" }; 
+      private static String[] defaultStringSettingsValues = { "", "0 1 2 3 4", "0", "", "500", "8", "2",
+              "" };
    
    
       // FONT SETTINGS.  Each array position has associated name.
@@ -640,6 +649,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    	 */
        public String getMemoryConfiguration() {
          return stringSettingsValues[MEMORY_CONFIGURATION];
+      }
+
+    /**
+     * Returns the String of instructions separated by the char '~'
+     * @return
+     */
+      public String getInstructionSubsetString() {
+           return stringSettingsValues[INSTRUCTION_SUBSET_LIST];
       }
    		
    	/**
@@ -1321,6 +1338,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          for (int i=0; i<stringSettingsKeys.length; i++) {
             stringSettingsValues[i] = preferences.get(stringSettingsKeys[i], stringSettingsValues[i]);
          }
+         populateInstructionSubsetList();
          for (int i=0; i<fontFamilySettingsKeys.length; i++) {
             fontFamilySettingsValues[i] = preferences.get(fontFamilySettingsKeys[i], fontFamilySettingsValues[i]);
             fontStyleSettingsValues[i] = preferences.get(fontStyleSettingsKeys[i], fontStyleSettingsValues[i]);
@@ -1330,6 +1348,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             colorSettingsValues[i] = preferences.get(colorSettingsKeys[i], colorSettingsValues[i]);
          }
          getEditorSyntaxStyleSettingsFromPreferences();
+      }
+
+    // Populate the ArrayList instructionSubset with the String setting that was saved to preferences
+      private void populateInstructionSubsetList() {
+           String instructions = getInstructionSubsetString();
+           instructionSubset = new ArrayList<>(Arrays.asList(instructions.split("~")));
       }
    	
    	
