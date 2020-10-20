@@ -80,7 +80,7 @@ public class PhobosMenu implements MarsTool {
             JPanel constraintsPanel = new JPanel();
             TitledBorder cTitledBorder = new TitledBorder("Constraints");
             constraintsPanel.setBorder(cTitledBorder);
-            GridLayout cGridLayout = new GridLayout(3, 1);
+            GridLayout cGridLayout = new GridLayout(4, 1);
             constraintsPanel.setLayout(cGridLayout);
 
             JCheckBox option1CheckBox = new JCheckBox("Comma Constraint");
@@ -96,6 +96,13 @@ public class PhobosMenu implements MarsTool {
             option2CheckBox.addChangeListener(changeEvent ->
                     Globals.getSettings().setBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT, option2CheckBox.isSelected()));
             constraintsPanel.add(option2CheckBox);
+
+            JCheckBox option3Checkbox = new JCheckBox("Offset Constraint");
+            option3Checkbox.setToolTipText("Requires the user to enter an offset in the lw and sw instructions.");
+            option3Checkbox.setSelected(Globals.getSettings().getBooleanSetting(Settings.OFFSET_CONSTRAINT));
+            option3Checkbox.addChangeListener(changeEvent ->
+                    Globals.getSettings().setBooleanSetting(Settings.OFFSET_CONSTRAINT, option3Checkbox.isSelected()));
+            constraintsPanel.add(option3Checkbox);
 
             JPanel option3Panel = new JPanel();
             TitledBorder isTitledBorder = new TitledBorder("Instruction Subset");

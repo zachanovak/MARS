@@ -116,12 +116,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       public static final int COMMA_CONSTRAINT = 21;
     /** Flag to control whether or not register name constraint is turned on.  */
       public static final int REGISTER_NAME_CONSTRAINT = 22;
+    /** Flag to control whether or not offset constraint is turned on. */
+      public static final int OFFSET_CONSTRAINT = 23;
     /** Flag to control whether or not register usage popup will appear when assembled.  */
-      public static final int POPUP_REGISTER_USAGE = 23;
+      public static final int POPUP_REGISTER_USAGE = 24;
     /** Flag to control whether or not instruction subset it turned on.  */
-      public static final int INSTRUCTION_SUBSET = 24;
+      public static final int INSTRUCTION_SUBSET = 25;
     /** Flag to control whether instruction subset is a whitelist or blacklist. */
-      public static final int INSTRUCTION_SUBSET_WHITELIST = 25;
+      public static final int INSTRUCTION_SUBSET_WHITELIST = 26;
    
       // NOTE: key sequence must match up with labels above which are used for array indexes!
       private static String[] booleanSettingsKeys = {"ExtendedAssembler", "BareMachine", "AssembleOnOpen", "AssembleAll",
@@ -131,7 +133,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          												"RegistersHighlighting", "StartAtMain", "EditorCurrentLineHighlighting",
          												"PopupInstructionGuidance", "PopupSyscallInput", "GenericTextEditor", 
          												"AutoIndent", "SelfModifyingCode", "CommaConstraint",
-                                                        "RegisterNameConstraint", "PopupRegisterUsage", "InstructionSubset", "InstructionSubsetWhitelist" };
+                                                        "RegisterNameConstraint", "OffsetConstraint", "PopupRegisterUsage",
+                                                        "InstructionSubset", "InstructionSubsetWhitelist" };
    
       /** Last resort default values for boolean settings; will use only  if neither
    	 *  the Preferences nor the properties file work. If you wish to change them, 
@@ -141,7 +144,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       public static boolean[] defaultBooleanSettingsValues = { // match the above list by position
                                               true, false, false, false, false, true, true, false, false, 
          												 true, false, false, true, true, false, true, true, false, false, true, false,
-                                                         false, false, false, false, false};
+                                                         false, false, false, false, false, false};
 
       /** Used when POPUP_REGISTER_USAGE flag is set to true. Contains a map of registers and how
           many are used when a program is assembled.

@@ -229,6 +229,8 @@
             ArrayList<ProgramStatement> statements;
             boolean registerNameConstraint = Globals.getSettings() != null &&
                     Globals.getSettings().getBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT);
+            boolean offsetConstraint = Globals.getSettings() != null &&
+                    Globals.getSettings().getBooleanSetting(Settings.OFFSET_CONSTRAINT);
             boolean countRegisters = Globals.getSettings() != null &&
                     Globals.getSettings().getBooleanSetting(Settings.POPUP_REGISTER_USAGE);
             HashMap<String, Integer> registers = null;
@@ -244,7 +246,7 @@
             }
             for (int i = 0; i < tokenList.size(); i++) {
                if (errors.errorLimitExceeded())
-                  break; 
+                  break;
                for (int z=0; z<((TokenList)tokenList.get(i)).size(); z++) { 
                   Token t = ((TokenList) tokenList.get(i)).get(z);
                	// record this token's original source program and line #. Differs from final, if .include used
@@ -254,6 +256,18 @@
                      errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(),
                              t.getSourceLine(), t.getStartPos(), "Register numbers like "
                              + t.getValue() + " can not be used."));
+                  }
+                  //System.out.println(t.getValue() + " of type " + t.getType());
+                  if (offsetConstraint && (t.getValue().equals("lw") || t.getValue().equals("sw"))) {
+                     // Check all tokens on the same line and make sure there is an integer token immediately before the left paren token
+                     for (int j = z + 1; j<((TokenList) tokenList.get(i)).size(); j++) {
+                        if (((TokenList) tokenList.get(i)).get(j).getType() == TokenTypes.LEFT_PAREN &&
+                                !TokenTypes.isIntegerTokenType(((TokenList) tokenList.get(i)).get(j - 1).getType())) {
+                           errors.add(new ErrorMessage(ErrorMessage.ERROR, t.getSourceMIPSprogram(),
+                                   t.getSourceLine(), ((TokenList) tokenList.get(i)).get(j).getStartPos(),
+                                   "An offset must be entered when using the " + t.getValue() + " instruction."));
+                        }
+                     }
                   }
                   if (countRegisters) {
                      if (t.getType() == TokenTypes.REGISTER_NAME) {
