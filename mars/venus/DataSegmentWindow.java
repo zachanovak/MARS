@@ -55,6 +55,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       private JPanel tablePanel;
       private JButton dataButton, nextButton, prevButton, stakButton, globButton, heapButton, kernButton, extnButton, mmioButton, textButton;
       private JCheckBox asciiDisplayCheckBox;
+      private JCheckBox littleEndianDisplayCheckBox;
    	
       static final int VALUES_PER_ROW = 8;
       static final int NUMBER_OF_ROWS = 16;  // with 8 value columns, this shows 512 bytes;  
@@ -72,6 +73,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    
       private boolean addressHighlighting = false;
       private boolean asciiDisplay = false;
+      private boolean littleEndianDisplay = false;
       private int addressRow, addressColumn, addressRowFirstAddress;
       private Settings settings;
    	
@@ -162,6 +164,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                   }
                });
          features.add(asciiDisplayCheckBox);
+         littleEndianDisplayCheckBox = new JCheckBox("Little Endian", littleEndianDisplay);
+         littleEndianDisplayCheckBox.setToolTipText("Display data segment values in little endian order");
+         littleEndianDisplayCheckBox.addItemListener(itemEvent -> {
+            littleEndianDisplay = (itemEvent.getStateChange() == ItemEvent.SELECTED);
+            DataSegmentWindow.this.updateValues();
+         });
+         features.add(littleEndianDisplayCheckBox);
       	
          contentPane.add(features, BorderLayout.SOUTH);  
       }  
@@ -508,7 +517,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             ((DataTableModel)dataModel).setDisplayAndModelValueAt(NumberDisplayBaseChooser.formatUnsignedInteger(address, addressBase),row,ADDRESS_COLUMN);
             for (int column=1; column<NUMBER_OF_COLUMNS; column++) {
                try {
-                  ((DataTableModel)dataModel).setDisplayAndModelValueAt(NumberDisplayBaseChooser.formatNumber(Globals.memory.getWordNoNotify(address), valueBase),row,column);
+                  int displayValue = Globals.memory.getWordNoNotify(address);
+                  if (littleEndianDisplay) {
+                     displayValue = (((displayValue) & 0xff) << 24) |
+                             (((displayValue >> 8) & 0xff) << 16) |
+                             (((displayValue >> 16) & 0xff) << 8) |
+                             ((displayValue >> 24) & 0xff);
+                  }
+                  ((DataTableModel)dataModel).setDisplayAndModelValueAt(NumberDisplayBaseChooser.formatNumber(displayValue, valueBase),row,column);
                } 
                   catch (AddressErrorException aee) {
                      // Bit of a hack here.  Memory will throw an exception if you try to read directly from text segment when the
@@ -521,6 +537,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                            Globals.getSettings().setBooleanSettingNonPersistent(Settings.SELF_MODIFYING_CODE_ENABLED, true);
                            try {
                               displayValue = Globals.memory.getWordNoNotify(address);
+                              if (littleEndianDisplay) {
+                                 displayValue = (((displayValue) & 0xff) << 24) |
+                                         (((displayValue >> 8) & 0xff) << 16) |
+                                         (((displayValue >> 16) & 0xff) << 8) |
+                                         ((displayValue >> 24) & 0xff);
+                              }
                            } 
                               catch (AddressErrorException e) { 
                               // Still got an exception?  Doesn't seem possible but if we drop through it will write default value 0.
