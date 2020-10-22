@@ -288,7 +288,7 @@
                         }
                      }
                   }
-                  if (instructionSubset && !this.inDataSegment) {
+                  if (instructionSubset && !this.inDataSegment && z == 0) {
                      System.out.println(t.getType());
                      if (whitelist && t.getType() == TokenTypes.OPERATOR &&
                              !Settings.instructionSubset.contains(t.getValue())) {
