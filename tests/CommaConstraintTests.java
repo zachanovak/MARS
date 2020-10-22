@@ -148,7 +148,7 @@ public class CommaConstraintTests {
             program.assemble(programFiles, true);
 
             Assertions.fail("Assembly failed to throw exception");
-        } catch (ProcessingException ex) { }
+        } catch (ProcessingException ignored) { }
     }
 
     @Test
@@ -171,7 +171,7 @@ public class CommaConstraintTests {
             program.assemble(programFiles, true);
 
             Assertions.fail("Assembly failed to throw exception");
-        } catch (ProcessingException ex) { }
+        } catch (ProcessingException ignored) { }
     }
 
     @Test

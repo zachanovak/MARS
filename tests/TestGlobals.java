@@ -12,6 +12,10 @@ public class TestGlobals {
     public static boolean offsetConstraint;
     public static boolean registerUsage;
 
+    public static boolean instructionSubset;
+    public static boolean whitelist;
+    public static String instructionSubsetString;
+
     public static void initMarsLaunch() {
         if (marsLaunch == null)
             marsLaunch = new MarsLaunch(new String[] {});

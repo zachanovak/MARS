@@ -288,8 +288,14 @@
                         }
                      }
                   }
-                  if (instructionSubset && !this.inDataSegment && z == 0) {
-                     System.out.println(t.getType());
+                  // Condition satisfied if: instruction subset is true AND if not in data segment
+                  // AND token is the first in the line AND either its the only token in the line OR
+                  // the next token in the line isn't a colon
+                  if (instructionSubset &&
+                          !this.inDataSegment &&
+                          z == 0 &&
+                          ((z + 1) >= ((TokenList)tokenList.get(i)).size() ||
+                          ((TokenList) tokenList.get(i)).get(z + 1).getType() != TokenTypes.COLON)) {
                      if (whitelist && t.getType() == TokenTypes.OPERATOR &&
                              !Settings.instructionSubset.contains(t.getValue())) {
                         // If instruction is not on whitelist, throw error
