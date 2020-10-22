@@ -7,16 +7,15 @@
         <center>
             <h1>Additional Features User Manual</h1>
         </center>
-        <p>The additional features include the Phobos Menu (with 4 new features) and the Auto Layout feature which is accessible directly from the main GUI.</p>
+        <p>The additional features include the Phobos Menu (with 5 new features) and the Auto Layout feature which is accessible directly from an icon on the main GUI or from the Edit menu.</p>
         <ul>
             <li>
                 <h2>Phobos Menu</h2>
-                <p>To access the Phobos Menu in MARS go to <b>Tools</b>  -> <b>Phobos Menu</b></p>
-                <img src="phobos-menu.png" width="284" height="264"/>
+                <p>The <b>Phobos</b> menu in MARS is accessible on the top menu bar to the right of <b>Help</b>. From the dropdown menu, you will find the following features.
                 <ol>
                     <li>
                         <h3>Comma Constraint</h3>
-                        <p>Tick the checkbox next to "Comma Constraint" in the Phobos menu to enable this feature. When enabled, this feature strictly requires commas to be used in instructions and arrays for the program to assemble.</p>
+                        <p>Tick the checkbox <b>Comma Constraint</b> to enable this feature. When enabled, this feature strictly requires commas to be used in instructions and arrays for the program to assemble.</p>
                         <p>Example usage:</p>
                         <pre>
   addi $t1 $t0 1    # This line will NOT assemble because of the lack of commas
@@ -25,7 +24,7 @@
                     </li>
                     <li>
                         <h3>Register Name Constraint</h3>
-                        <p>Tick the checkbox next to "Register Name Constraint" in the Phobos menu to enable this feature. When enabled, this feature strictly requires register names to be used, rather than register numbers, for the program to assemble.</p>
+                        <p>Tick the checkbox <b>Register Name Constraint</b> to enable this feature. When enabled, this feature strictly requires register names to be used, rather than register numbers, for the program to assemble.</p>
                         <p>Example usage:</p>
                         <pre>
   addi $1, $0, 1    # This line will NOT assemble because register numbers are being used
@@ -33,13 +32,57 @@
                         <p>Note that if the Register Name Constraint feature were to be disabled, the above two lines would both assemble (albeit, the first line would then be using possibly different registers than intended).</p>
 
                     </li>
-                    <li><h3>Instruction Subset</h3></li>
+                    <li>
+                        <h3>Offset Constraint</h3>
+                        <p>Tick the checkbox <b>Offset Constraint</b> to enable this feature. When enabled, this feature strictly requires an offset to be used when using the <b>lw</b> or <b>sw</b> instructions.</p>
+                        <p>Example usage:</p>
+                        <pre>
+  lw $t0, ($t1)    # This line will NOT assemble because there is not an offset
+  lw $t0, 0($t1)   # This line WILL assemble because an offset is supplied</pre>
+                    </li>
                     <li>
                         <h3>Show Register Usage</h3>
-                        <p>Tick the checkbox next to "Show Register Usage on Assemble" in the Phobos menu to enable this feature. When enabled, this feature will show a popup window when a program is successfully assembled. The popup window will have multiple tabs that one can select (or move between using the <b>arrow keys</b>) to see bar charts on the amount of registers that the assembled program contains.</p>
+                        <p>Tick the checkbox <b>Show Register Usage on Assemble</b> to enable this feature. When enabled, this feature will show a popup window when a program is successfully assembled. The popup window will have multiple tabs that one can select (or move between using the <b>arrow keys</b>) to see bar charts on the amount of registers that the assembled program contains.</p>
                         <p>Example usage:</p>
                         <img src="bar-chart-example.png" width="725" height="555"/>
                         <p>The above image shows the usage of temporary registers. Using this image alone, one can see how many of each temporary registers are used within the program. According to the image, the program contains six $t3 registers, one $t2 register, and zero $t8 registers.</p>
+                    </li>
+                    <li>
+                        <h3>Instruction Subset</h3>
+                        <p>Select the option <b>Instruction Subset ...</b> to bring up the following dialog window:</p>
+                        <img src="instruction-subset-window.png" />
+                        <p>This feature can be enabled by ticking the <b>Enable Instruction Subset</b> checkbox. When enabled, this feature allows one to use a whitelist or blacklist to determine what subset of instructions can or can not be used, respectively. Any instructions that are currently in the subset are displayed in the list on the left.</p>
+                        <ul>
+                            <li>
+                                <h4>Add Instruction</h4>
+                                <p>To add an instruction, simply type in any valid instruction into the text box at the top right and then press the <b>+</b> button. If the instruction is invalid, a warning will pop up and the instruction will not be added to the subset.</p>
+                            </li>
+                            <li>
+                                <h4>Removed Selected</h4>
+                                <p>To remove a selected instruction first select any amount of instructions. Specific instructions can be selected by clicking on them in the subset. To select more than one contiguous instruction hold <b>Shift</b> and click down to the last instruction to be selected. To deselect a specific instruction that you have selected, hold <b>Ctrl</b> and click the instruction. One can also hold <b>Ctrl</b> to pick more than one instruction that is not contiguous.</p>
+                                <p>Once the instruction(s) in the subset to be removed have been selected, press the <b>Remove Selected</b> button to remove them.</p>
+                            </li>
+                            <li>
+                                <h4>Clear</h4>
+                                <p>To clear all instructions from the subset, press the <b>Clear</b> button.</p>
+                            </li>
+                            <li>
+                                <h4>Blacklist/Whitelist</h4>
+                                <p>If <b>Blacklist</b> is selected, then all instructions in the subset are effectively "banned" from being used within the program. If any instructions that are in the subset are used, then the program will not assemble.</p>
+                                <p>If <b>Whitelist</b> is selected, then all instructions in the subset are the only ones allowed to be used within the program. If any instructions that are <b>NOT</b> in the subset are used, then the program will not assemble.</p>
+                            </li>
+                            <li>
+                                <h4>Import Subset</h4>
+                                <p>To import specific instructions from a text file, press the <b>Import Subset</b> button. One must have a text file (*.txt extension only) prepared beforehand. Within this text file, any instructions one would like to add to the subset must be entered each on their own line. Any invalid instructions entered will be ignored and not added to the subset.</p>
+                                <p>Example text file:</p>
+                                <pre>
+  add
+  addi
+  lw
+  jal</pre>
+                                <p>When importing a text file, a prompt will appear asking whether to <b>Overwrite</b> or <b>Add</b>. To overwrite the current instruction subset with the instructions being imported, select the <b>Overwrite</b> button. To add the instructions from the text file to the existing instruction subset, select the <b>Add</b> button. Duplicate instructions do not have to be worried about as duplicates are filtered out.</p>
+                            </li>
+                        </ul>
                     </li>
                 </ol>
             </li>
@@ -48,7 +91,7 @@
                 <p>There are three ways one can use the Auto Layout feature in MARS while editing a file:</p>
                 <ul>
                     <li>Go to <b>Edit</b> -> <b>Auto Layout</b></li>
-                    <li>Press the <img src="images/AutoLayout22.png"/>Auto Layout icon in the icon menu below the top menu bar </li>
+                    <li>Press the <img src="../images/AutoLayout22.png"/>Auto Layout icon in the icon menu below the top menu bar </li>
                     <li>Press <b>Ctrl</b> + <b>Q</b></li>
                 </ul>
             </li>

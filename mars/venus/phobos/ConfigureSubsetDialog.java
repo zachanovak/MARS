@@ -20,6 +20,11 @@ public class ConfigureSubsetDialog extends JDialog {
 
     private JPanel panel;
 
+    private JPanel leftSidePanel;
+    private JPanel rightSidePanel;
+    private JCheckBox enableCheckBox;
+    private JPanel addPanel;
+
     private JTextField addInstructionTextField;
     private DefaultListModel<String> subsetModel;
     private JList<String> instructionSubset;
@@ -39,10 +44,11 @@ public class ConfigureSubsetDialog extends JDialog {
     private void initLayout() {
         initLeftSidePanel();
         initRightSidePanel();
+        enabledChanged(enableCheckBox.isSelected());
     }
 
     private void initLeftSidePanel() {
-        JPanel leftSidePanel = new JPanel(new BorderLayout());
+        leftSidePanel = new JPanel(new BorderLayout());
         leftSidePanel.setBorder(new EmptyBorder(10, 10, 10, 5));
         panel.add(leftSidePanel);
 
@@ -63,18 +69,17 @@ public class ConfigureSubsetDialog extends JDialog {
     }
 
     private void initRightSidePanel() {
-        JPanel rightSidePanel = new JPanel(new GridLayout(7, 1, 10, 10));
+        rightSidePanel = new JPanel(new GridLayout(7, 1, 10, 10));
         rightSidePanel.setBorder(new EmptyBorder(10, 5, 10, 10));
         panel.add(rightSidePanel);
 
-        JCheckBox enableCheckBox = new JCheckBox("Enable Instruction Subset");
+        enableCheckBox = new JCheckBox("Enable Instruction Subset");
         enableCheckBox.setToolTipText("Check to allow/disallow certain instructions from being used.");
         enableCheckBox.setSelected(Globals.getSettings().getBooleanSetting(Settings.INSTRUCTION_SUBSET));
-        enableCheckBox.addChangeListener(changeEvent ->
-                Globals.getSettings().setBooleanSetting(Settings.INSTRUCTION_SUBSET, enableCheckBox.isSelected()));
+        enableCheckBox.addChangeListener(changeEvent -> enabledChanged(enableCheckBox.isSelected()));
         rightSidePanel.add(enableCheckBox);
 
-        JPanel addPanel = new JPanel(new BorderLayout(10, 10));
+        addPanel = new JPanel(new BorderLayout(10, 10));
         addInstructionTextField = new JTextField();
         addInstructionTextField.setToolTipText("The instruction that gets added");
         addPanel.add(addInstructionTextField, BorderLayout.CENTER);
@@ -130,6 +135,19 @@ public class ConfigureSubsetDialog extends JDialog {
         importButton.setToolTipText("Imports a subset of instructions from a text file");
         importButton.addActionListener(actionEvent -> importButtonPressed());
         rightSidePanel.add(importButton);
+    }
+
+    private void enabledChanged(boolean enabled) {
+        Globals.getSettings().setBooleanSetting(Settings.INSTRUCTION_SUBSET, enableCheckBox.isSelected());
+        for (Component comp : leftSidePanel.getComponents()) {
+            comp.setEnabled(enabled);
+        }
+        for (Component comp : rightSidePanel.getComponents()) {
+            if (comp != enableCheckBox) comp.setEnabled(enabled);
+        }
+        for (Component comp : addPanel.getComponents()) {
+            comp.setEnabled(enabled);
+        }
     }
 
     private void addButtonPressed() {
