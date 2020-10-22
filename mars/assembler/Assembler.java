@@ -288,7 +288,8 @@
                         }
                      }
                   }
-                  if (instructionSubset) {
+                  if (instructionSubset && !this.inDataSegment) {
+                     System.out.println(t.getType());
                      if (whitelist && t.getType() == TokenTypes.OPERATOR &&
                              !Settings.instructionSubset.contains(t.getValue())) {
                         // If instruction is not on whitelist, throw error

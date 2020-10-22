@@ -1,6 +1,5 @@
    package mars.venus;
    import mars.*;
-   import mars.tools.PhobosMenu;
    import mars.tools.RegisterUsageWindow;
    import mars.util.*;
    import mars.mips.hardware.*;

@@ -1,6 +1,8 @@
    package mars.venus;
    import mars.*;
    import mars.mips.dump.*;
+   import mars.venus.phobos.*;
+
    import javax.swing.*;
    import java.awt.*;
    import java.awt.event.*;
@@ -68,7 +70,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       Editor editor;
    	
    	// components of the menubar
-      private JMenu file, run, window, help, edit, settings;
+      private JMenu file, run, window, help, edit, settings, phobos;
       private JMenuItem fileNew, fileOpen, fileClose, fileCloseAll, fileSave, fileSaveAs, fileSaveAll, fileDumpMemory, filePrint, fileExit;
       private JMenuItem editUndo, editRedo, editCut, editCopy, editPaste, editFindReplace, editAutoLayout, editSelectAll;
       private JMenuItem runGo, runStep, runBackstep, runReset, runAssemble, runStop, runPause, runClearBreakpoints, runToggleBreakpoints;
@@ -77,6 +79,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       		  settingsDelayedBranching, settingsProgramArguments, settingsSelfModifyingCode;
       private JMenuItem settingsExceptionHandler, settingsEditor, settingsHighlighting, settingsMemoryConfiguration;
       private JMenuItem helpHelp, helpAbout;
+      private JCheckBoxMenuItem phobosCommaConstraint, phobosRegisterNameConstraint, phobosOffsetConstraint, phobosShowRegisterUsage;
+      private JMenuItem phobosInstructionSubset;
          
       // components of the toolbar
       private JButton Undo, Redo, Cut, Copy, Paste, FindReplace, AutoLayout, SelectAll;
@@ -101,6 +105,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       					settingsDelayedBranchingAction, settingsExceptionHandlerAction, settingsEditorAction,
       					settingsHighlightingAction, settingsMemoryConfigurationAction, settingsSelfModifyingCodeAction;    
       private Action helpHelpAction, helpAboutAction;
+      private Action phobosCommaConstraintAction, phobosRegisterNameConstraintAction, phobosOffsetConstraintAction,
+              phobosInstructionSubsetAction, phobosShowRegisterUsageAction;
    
    
     /**
@@ -453,7 +459,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                									  KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0),
                									  mainUI);	
             helpAboutAction = new HelpAboutAction("About ...",null, 
-                                            "Information about Mars", null,null, mainUI);	
+                                            "Information about Mars", null,null, mainUI);
+            phobosCommaConstraintAction = new PhobosCommaConstraintAction("Comma Constraint", null,
+                    "Requires the user to enter commas in instructions.", KeyEvent.VK_C,
+                    null, mainUI);
+            phobosRegisterNameConstraintAction = new PhobosRegisterNameConstraintAction("Register Name Constraint", null,
+                    "Restricts the user to only use register names rather than register numbers.", KeyEvent.VK_R,
+                    null, mainUI);
+            phobosOffsetConstraintAction = new PhobosOffsetConstraintAction("Offset Constraint", null,
+                    "Requires the user to enter an offset in the lw and sw instructions.", KeyEvent.VK_O,
+                    null, mainUI);
+            phobosInstructionSubsetAction = new PhobosInstructionSubsetAction("Instruction Subset ...", null,
+                    "Configure what instructions should be allowed/disallowed.", KeyEvent.VK_I,
+                    null, mainUI);
+            phobosShowRegisterUsageAction = new PhobosShowRegisterUsageAction("Show Register Usage on Assemble", null,
+                    "After assembled, window with register usage will appear.", KeyEvent.VK_S,
+                    null, mainUI);
          } 
              catch (NullPointerException e) {
                System.out.println("Internal Error: images folder not found, or other null pointer exception while creating Action objects");
@@ -485,6 +506,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          help = new JMenu("Help");
          help.setMnemonic(KeyEvent.VK_H); 
       	// slight bug: user typing alt-H activates help menu item directly, not help menu
+         phobos = new JMenu("Phobos");
+         phobos.setMnemonic(KeyEvent.VK_P);
       
          fileNew = new JMenuItem(fileNewAction);
          fileNew.setIcon(new ImageIcon(tk.getImage(cs.getResource(Globals.imagesPath+"New16.png"))));
@@ -639,7 +662,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          help.add(helpHelp);
          help.addSeparator();
          help.add(helpAbout);
-      
+
+         phobosCommaConstraint = new JCheckBoxMenuItem(phobosCommaConstraintAction);
+         phobosRegisterNameConstraint = new JCheckBoxMenuItem(phobosRegisterNameConstraintAction);
+         phobosOffsetConstraint = new JCheckBoxMenuItem(phobosOffsetConstraintAction);
+         phobosShowRegisterUsage = new JCheckBoxMenuItem(phobosShowRegisterUsageAction);
+         phobosInstructionSubset = new JMenuItem(phobosInstructionSubsetAction);
+         phobos.add(phobosCommaConstraint);
+         phobos.add(phobosRegisterNameConstraint);
+         phobos.add(phobosOffsetConstraint);
+         phobos.addSeparator();
+         phobos.add(phobosShowRegisterUsage);
+         phobos.addSeparator();
+         phobos.add(phobosInstructionSubset);
+
          menuBar.add(file);
          menuBar.add(edit);
          menuBar.add(run);
@@ -647,6 +683,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          JMenu toolMenu = new ToolLoader().buildToolsMenu();
          if (toolMenu != null) menuBar.add(toolMenu);
          menuBar.add(help);
+         menuBar.add(phobos);
       	
       	// experiment with popup menu for settings. 3 Aug 2006 PS
          //setupPopupMenu();

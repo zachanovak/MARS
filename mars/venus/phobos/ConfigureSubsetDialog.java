@@ -1,4 +1,4 @@
-package mars.tools;
+package mars.venus.phobos;
 
 import mars.Globals;
 import mars.Settings;
@@ -7,21 +7,17 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public class ConfigureSubsetWindow implements Runnable {
+public class ConfigureSubsetDialog extends JDialog {
     // Used to set the size of the menu
-    private static final int PREFRERRED_WIDTH = 450;
-    private static final int PREFERRED_HEIGHT = 250;
+    private static final int PREFRERRED_WIDTH = 470;
+    private static final int PREFERRED_HEIGHT = 290;
 
-    private final JDialog frame;
     private JPanel panel;
 
     private JTextField addInstructionTextField;
@@ -29,28 +25,15 @@ public class ConfigureSubsetWindow implements Runnable {
     private JList<String> instructionSubset;
     private JFileChooser fileChooser;
 
-    public ConfigureSubsetWindow() {
-        frame = new JDialog(Globals.getGui(),"Configure Subset Window");
-
-        // Snippet by Pete Sanderson, 2 Nov. 2006, to be a window-closing sequence
-        frame.addWindowListener(
-                new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        frame.setVisible(false);
-                        frame.dispose();
-                    }
-                });
+    public ConfigureSubsetDialog() {
+        super(Globals.getGui(),"Instruction Subset Window", true);
 
         panel = new JPanel(new GridLayout(1, 2));
-        frame.getContentPane().add(panel);
+        getContentPane().add(panel);
         initLayout();
-        frame.setPreferredSize(new Dimension(PREFRERRED_WIDTH, PREFERRED_HEIGHT));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.setTitle("Configure Subset Window");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
+        setPreferredSize(new Dimension(PREFRERRED_WIDTH, PREFERRED_HEIGHT));
+        pack();
+        setLocationRelativeTo(null);
     }
 
     private void initLayout() {
@@ -80,9 +63,16 @@ public class ConfigureSubsetWindow implements Runnable {
     }
 
     private void initRightSidePanel() {
-        JPanel rightSidePanel = new JPanel(new GridLayout(6, 1, 10, 10));
+        JPanel rightSidePanel = new JPanel(new GridLayout(7, 1, 10, 10));
         rightSidePanel.setBorder(new EmptyBorder(10, 5, 10, 10));
         panel.add(rightSidePanel);
+
+        JCheckBox enableCheckBox = new JCheckBox("Enable Instruction Subset");
+        enableCheckBox.setToolTipText("Check to allow/disallow certain instructions from being used.");
+        enableCheckBox.setSelected(Globals.getSettings().getBooleanSetting(Settings.INSTRUCTION_SUBSET));
+        enableCheckBox.addChangeListener(changeEvent ->
+                Globals.getSettings().setBooleanSetting(Settings.INSTRUCTION_SUBSET, enableCheckBox.isSelected()));
+        rightSidePanel.add(enableCheckBox);
 
         JPanel addPanel = new JPanel(new BorderLayout(10, 10));
         addInstructionTextField = new JTextField();
@@ -146,14 +136,14 @@ public class ConfigureSubsetWindow implements Runnable {
         String instruction = addInstructionTextField.getText();
         instruction = instruction.trim();
         if (instruction.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "No instruction was entered!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No instruction was entered!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         } else if (subsetModel.contains(instruction)) {
-            JOptionPane.showMessageDialog(frame, "Instruction already exists in subset.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Instruction already exists in subset.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (Globals.instructionSet.matchOperator(instruction) == null) {
-            JOptionPane.showMessageDialog(frame, "The instruction \"" + instruction + "\" does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "The instruction \"" + instruction + "\" does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         subsetModel.addElement(instruction);
@@ -164,7 +154,7 @@ public class ConfigureSubsetWindow implements Runnable {
 
     private void removeSelectedButtonPressed() {
         if (instructionSubset.getSelectedValue() == null) {
-            JOptionPane.showMessageDialog(frame, "No instruction was selected in the subset!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No instruction was selected in the subset!", "Error", JOptionPane.ERROR_MESSAGE);
         }
         List<String> removeInstructions = instructionSubset.getSelectedValuesList();
         Settings.instructionSubset.removeAll(removeInstructions);
@@ -175,7 +165,7 @@ public class ConfigureSubsetWindow implements Runnable {
     }
 
     private void clearButtonPressed() {
-        int input = JOptionPane.showConfirmDialog(frame, "Are you sure you want to clear the subset?", "Select an Option", JOptionPane.YES_NO_OPTION);
+        int input = JOptionPane.showConfirmDialog(this, "Are you sure you want to clear the subset?", "Select an Option", JOptionPane.YES_NO_OPTION);
         if (input == JOptionPane.YES_OPTION) {
             subsetModel.clear();
             composeAndSaveSubsetString();
@@ -184,10 +174,10 @@ public class ConfigureSubsetWindow implements Runnable {
     }
 
     private void importButtonPressed() {
-        int input = fileChooser.showOpenDialog(frame);
+        int input = fileChooser.showOpenDialog(this);
         if (input == JFileChooser.APPROVE_OPTION) {
             String[] options = {"Overwrite", "Add", "Cancel"};
-            int option = JOptionPane.showOptionDialog(frame, "Do you want to overwrite the existing subset\nwith the subset from the text file?", "Select an Option",
+            int option = JOptionPane.showOptionDialog(this, "Do you want to overwrite the existing subset\nwith the subset from the text file?", "Select an Option",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
             if (option == 2) // Cancel
                 return;
@@ -233,10 +223,5 @@ public class ConfigureSubsetWindow implements Runnable {
             sb.append('~');
         }
         Globals.getSettings().setInstructionSubsetString(sb.toString());
-    }
-
-    @Override
-    public void run() {
-
     }
 }
