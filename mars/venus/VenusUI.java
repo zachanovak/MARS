@@ -664,9 +664,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          help.add(helpAbout);
 
          phobosCommaConstraint = new JCheckBoxMenuItem(phobosCommaConstraintAction);
+         phobosCommaConstraint.setSelected(Globals.getSettings().getBooleanSetting(Settings.COMMA_CONSTRAINT));
          phobosRegisterNameConstraint = new JCheckBoxMenuItem(phobosRegisterNameConstraintAction);
+         phobosRegisterNameConstraint.setSelected(Globals.getSettings().getBooleanSetting(Settings.REGISTER_NAME_CONSTRAINT));
          phobosOffsetConstraint = new JCheckBoxMenuItem(phobosOffsetConstraintAction);
+         phobosOffsetConstraint.setSelected(Globals.getSettings().getBooleanSetting(Settings.OFFSET_CONSTRAINT));
          phobosShowRegisterUsage = new JCheckBoxMenuItem(phobosShowRegisterUsageAction);
+         phobosShowRegisterUsage.setSelected(Globals.getSettings().getBooleanSetting(Settings.POPUP_REGISTER_USAGE));
          phobosInstructionSubset = new JMenuItem(phobosInstructionSubsetAction);
          phobos.add(phobosCommaConstraint);
          phobos.add(phobosRegisterNameConstraint);
