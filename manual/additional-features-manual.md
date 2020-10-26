@@ -137,10 +137,10 @@ the main GUI or from the Edit menu.
 
             Example text file:
 
-                  add
-                  addi
-                  lw
-                  jal
+                add
+                addi
+                lw
+                jal
 
             When importing a text file, a prompt will appear asking
             whether to **Overwrite** or **Add**. To overwrite the
@@ -159,3 +159,45 @@ the main GUI or from the Edit menu.
     -   Press the ![](../images/AutoLayout22.png)Auto Layout icon in the
         icon menu below the top menu bar
     -   Press **Ctrl** + **Q**
+
+    Auto Layout can be used at any time to automatically reformat a
+    document to the specified guidelines:
+
+    1.  All labels will have no whitespace before them.
+    2.  Every other type of instruction will have one tab amount of
+        whitespace before them.
+    3.  All inline comments will be aligned with each other.
+    4.  Comments on their own line will not be changed (this includes
+        the whitespace before them).
+
+    Example usage:
+
+    This is the program before Auto Layout is used.
+
+        ###################
+        # Block of comments
+        ###################
+        .data
+        a:
+        .word 128 # This is a word
+        .text
+        lw $t0, a
+        LABEL: # Label to jump back to
+        addi $t0, $t0, -1 # Subtract one
+        bgt $t0, 0, LABEL
+
+    This is the program after Auto Layout (with editor tab size of 2) is
+    used.
+
+        ###################
+        # Block of comments
+        ###################
+          .data
+        a:
+          .word 128          # This is a word
+          .text
+          lw $t0, a
+        LABEL:               # Label to jump back to
+          addi $t0, $t0, -1  # Subtract one
+          bgt $t0, 0, LABEL
+
