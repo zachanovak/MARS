@@ -16,6 +16,8 @@ public class TestGlobals {
     public static boolean whitelist;
     public static String instructionSubsetString;
 
+    public static int tabSize;
+
     public static void initMarsLaunch() {
         if (marsLaunch == null)
             marsLaunch = new MarsLaunch(new String[] {});

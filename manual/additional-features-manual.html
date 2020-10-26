@@ -2,6 +2,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
         <title>Additional Features User Manual</title>
+        <style>
+            pre {
+                background-color: #c8ddf2;
+                padding: 10px;
+                display: inline-block;
+            }
+        </style>
     </head>
     <body>
         <center>
@@ -76,10 +83,10 @@
                                 <p>To import specific instructions from a text file, press the <b>Import Subset</b> button. One must have a text file (*.txt extension only) prepared beforehand. Within this text file, any instructions one would like to add to the subset must be entered each on their own line. Any invalid instructions entered will be ignored and not added to the subset.</p>
                                 <p>Example text file:</p>
                                 <pre>
-  add
-  addi
-  lw
-  jal</pre>
+add
+addi
+lw
+jal</pre>
                                 <p>When importing a text file, a prompt will appear asking whether to <b>Overwrite</b> or <b>Add</b>. To overwrite the current instruction subset with the instructions being imported, select the <b>Overwrite</b> button. To add the instructions from the text file to the existing instruction subset, select the <b>Add</b> button. Duplicate instructions do not have to be worried about as duplicates are filtered out.</p>
                             </li>
                         </ul>
@@ -94,6 +101,40 @@
                     <li>Press the <img src="../images/AutoLayout22.png"/>Auto Layout icon in the icon menu below the top menu bar </li>
                     <li>Press <b>Ctrl</b> + <b>Q</b></li>
                 </ul>
+                <p>Auto Layout can be used at any time to automatically reformat a document to the specified guidelines:</p>
+                <ol>
+                    <li>All labels will have no whitespace before them.</li>
+                    <li>Every other type of instruction will have one tab amount of whitespace before them.</li>
+                    <li>All inline comments will be aligned with each other.</li>
+                    <li>Comments on their own line will not be changed (this includes the whitespace before them).</li>
+                </ol>
+                <p>Example usage:</p>
+                <p>This is the program before Auto Layout is used.</p>
+                <pre>
+###################
+# Block of comments
+###################
+.data
+a:
+.word 128 # This is a word
+.text
+lw $t0, a
+LABEL: # Label to jump back to
+addi $t0, $t0, -1 # Subtract one
+bgt $t0, 0, LABEL</pre>
+                <p>This is the program after Auto Layout (with editor tab size of 2) is used.</p>
+                <pre>
+###################
+# Block of comments
+###################
+  .data
+a:
+  .word 128          # This is a word
+  .text
+  lw $t0, a
+LABEL:               # Label to jump back to
+  addi $t0, $t0, -1  # Subtract one
+  bgt $t0, 0, LABEL</pre>
             </li>
         </ul>
 
