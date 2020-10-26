@@ -164,8 +164,7 @@ the main GUI or from the Edit menu.
     document to the specified guidelines:
 
     1.  All labels will have no whitespace before them.
-    2.  Every other type of instruction will have one tab amount of
-        whitespace before them.
+    2.  Every other type of instruction will have one tab before them.
     3.  All inline comments will be aligned with each other.
     4.  Comments on their own line will not be changed (this includes
         the whitespace before them).
@@ -186,8 +185,7 @@ the main GUI or from the Edit menu.
         addi $t0, $t0, -1 # Subtract one
         bgt $t0, 0, LABEL
 
-    This is the program after Auto Layout (with editor tab size of 2) is
-    used.
+    This is the program after Auto Layout is used. The tabs in this example are replaced with whitespace for readability's sake.
 
         ###################
         # Block of comments
@@ -200,4 +198,5 @@ the main GUI or from the Edit menu.
         LABEL:               # Label to jump back to
           addi $t0, $t0, -1  # Subtract one
           bgt $t0, 0, LABEL
+
 

@@ -47,9 +47,6 @@ public class AutoLayoutUtilities {
         String firstPass = newSource.toString();
         newSource = new StringBuilder();
         newLineIndex = firstPass.indexOf('\n');
-        // Get tab size so spaces can be added instead of tabs as tabs cause alignment issues
-        int tabSize = Globals.getSettings().getEditorTabSize();
-        String tab = new String(new char[tabSize]).replace('\0', ' ');
         // SECOND PASS
         // Format all in-line comments with the furthest index plus a tab.
         while (newLineIndex != -1) {
@@ -61,7 +58,7 @@ public class AutoLayoutUtilities {
                 // Set the comment to the index of furthest plus a tab
                 // String space is to add however much space is needed between instruction and comment
                 String space = new String(new char[furthestIndex - line.substring(0, commentIndex).length()]).replace('\0', ' ');
-                line = line.substring(0, commentIndex) + space + tab + line.substring(commentIndex);
+                line = line.substring(0, commentIndex) + space + '\t' + line.substring(commentIndex);
             }
 
             newSource.append(line);
@@ -74,7 +71,7 @@ public class AutoLayoutUtilities {
         int commentIndex = getCommentIndex(line);
         if (commentIndex != -1 && !line.substring(0, commentIndex).trim().isEmpty()) {
             String space = new String(new char[furthestIndex - line.substring(0, commentIndex).length()]).replace('\0', ' ');
-            line = line.substring(0, commentIndex) + space + tab + line.substring(commentIndex);
+            line = line.substring(0, commentIndex) + space + '\t' + line.substring(commentIndex);
         }
         newSource.append(line);
 
@@ -98,8 +95,7 @@ public class AutoLayoutUtilities {
             if (isLineALabel(source)) {
                 return source;
             } else {
-                return new String(new char[Globals.getSettings().getEditorTabSize()])
-                        .replace('\0', ' ') + source;
+                return '\t' + source;
             }
         }
     }

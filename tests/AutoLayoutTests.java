@@ -1,30 +1,10 @@
 package tests;
 
-import mars.Globals;
 import mars.venus.AutoLayoutUtilities;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class AutoLayoutTests {
-    // TODO:
-    // Test if instructions are formatted correctly
-    // Test if in-line comments are formatted correctly
-    // Test if existing in-line comments with tooons of space in between the instruction and the comment get fixed
-    // Test if comments on their own line
-    // Test if recognizes the difference between a label and a label in a comment
-    // Test if ignores any symbols in a string literal
-    // Test if works on one line program
-    // Test with different tab sizes
-
-    @BeforeAll
-    static void getPreValue() {
-        // Init MarsLaunch so the Globals are initialized
-        TestGlobals.initMarsLaunch();
-        TestGlobals.tabSize = Globals.getSettings().getEditorTabSize();
-    }
-
     @Test()
     void shouldFormatLabelsCorrectly() {
         String sourceCode =
@@ -47,32 +27,238 @@ public class AutoLayoutTests {
 
     @Test()
     void shouldFormatInstructionsCorrectly() {
-        int tabSize = Globals.getSettings().getEditorTabSize();
-        String tab = new String(new char[tabSize]).replace('\0', ' ');
-
         String sourceCode =
                 "addi $t0, $t0, 1\n" +
                 "j LABEL";
         Assertions.assertEquals(
-                tab + "addi $t0, $t0, 1\n" +
-                tab + "j LABEL", AutoLayoutUtilities.autoLayout(sourceCode));
+                "\taddi $t0, $t0, 1\n" +
+                "\tj LABEL", AutoLayoutUtilities.autoLayout(sourceCode));
     }
 
     @Test()
     void shouldFormatInstructionsCorrectly2() {
-        int tabSize = Globals.getSettings().getEditorTabSize();
-        String tab = new String(new char[tabSize]).replace('\0', ' ');
-
         String sourceCode =
                 "               addi $t0, $t0, 1\n" +
                 "   j LABEL";
         Assertions.assertEquals(
-                tab + "addi $t0, $t0, 1\n" +
-                tab + "j LABEL", AutoLayoutUtilities.autoLayout(sourceCode));
+                "\taddi $t0, $t0, 1\n" +
+                "\tj LABEL", AutoLayoutUtilities.autoLayout(sourceCode));
     }
 
-    @AfterAll
-    static void restorePreValue() {
-        Globals.getSettings().setEditorTabSize(TestGlobals.tabSize);
+    @Test()
+    void shouldFormatLabelsAndInstructionsCorrectly() {
+        String sourceCode =
+                "LABEL:\n" +
+                "addi $t0, $t0, 1";
+        Assertions.assertEquals(
+                "LABEL:\n" +
+                        "\taddi $t0, $t0, 1", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldFormatLabelsAndInstructionsCorrectly2() {
+        String sourceCode =
+                "                  LABEL:\n" +
+                        "        addi $t0, $t0, 1";
+        Assertions.assertEquals(
+                "LABEL:\n" +
+                        "\taddi $t0, $t0, 1", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldFormatOneLineProgramCorrectly() {
+        String sourceCode =
+                "LABEL:";
+        Assertions.assertEquals(
+                "LABEL:", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldFormatOneLineProgramCorrectly2() {
+        String sourceCode =
+                "addi $t0, $t0, 1";
+        Assertions.assertEquals(
+                "\taddi $t0, $t0, 1", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldFormatInlineCommentCorrectly() {
+        String sourceCode =
+                "LABEL:# Comment";
+        Assertions.assertEquals(
+                "LABEL:\t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldFormatInlineCommentCorrectly2() {
+        String sourceCode =
+                "addi $t0, $t0, 1# Comment";
+        Assertions.assertEquals(
+                "\taddi $t0, $t0, 1\t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldFormatInlineCommentCorrectly3() {
+        String sourceCode =
+                "   LABEL:                 # Comment   ";
+        Assertions.assertEquals(
+                "LABEL:\t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldNotFormatSeparateLineComment() {
+        String sourceCode =
+                "# Comment";
+        Assertions.assertEquals(
+                "# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldNotFormatSeparateLineComment2() {
+        String sourceCode =
+                "                # Comment";
+        Assertions.assertEquals(
+                "                # Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInCommentsAndFormatCorrectly() {
+        String sourceCode =
+                "LABEL:# Comment # Not a second comment";
+        Assertions.assertEquals(
+                "LABEL:\t# Comment # Not a second comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInCommentsAndFormatCorrectly2() {
+        String sourceCode =
+                "addi $t0, $t0, 1# Comment and fake label:";
+        Assertions.assertEquals(
+                "\taddi $t0, $t0, 1\t# Comment and fake label:", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInCommentsAndFormatCorrectly3() {
+        String sourceCode =
+                "addi $t0, $t0, 1# Comment and fake label':'with '' quotes '";
+        Assertions.assertEquals(
+                "\taddi $t0, $t0, 1\t# Comment and fake label':'with '' quotes '", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInStringsAndFormatCorrectly() {
+        String sourceCode =
+                ".asciiz \"This isn't an actual # comment\"";
+        Assertions.assertEquals(
+                "\t.asciiz \"This isn't an actual # comment\"", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInStringsAndFormatCorrectly2() {
+        String sourceCode =
+                ".asciiz \"This isn't an actual # comment\"# This is real";
+        Assertions.assertEquals(
+                "\t.asciiz \"This isn't an actual # comment\"\t# This is real", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInStringsAndFormatCorrectly3() {
+        String sourceCode =
+                ".asciiz \"This isn't 'an' actual' # comment\"# This is real";
+        Assertions.assertEquals(
+                "\t.asciiz \"This isn't 'an' actual' # comment\"\t# This is real", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInStringsAndFormatCorrectly4() {
+        String sourceCode =
+                ".asciiz \"This isn't an actual label:\"";
+        Assertions.assertEquals(
+                "\t.asciiz \"This isn't an actual label:\"", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInStringsAndFormatCorrectly5() {
+        String sourceCode =
+                ".asciiz \"Escaped quote \\\" This isn't an actual label:\"";
+        Assertions.assertEquals(
+                "\t.asciiz \"Escaped quote \\\" This isn't an actual label:\"", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+
+    @Test()
+    void shouldIgnoreSymbolsInBytesAndFormatCorrectly() {
+        String sourceCode =
+                ".byte '#'# Comment";
+        Assertions.assertEquals(
+                "\t.byte '#'\t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInBytesAndFormatCorrectly2() {
+        String sourceCode =
+                ".byte ':'";
+        Assertions.assertEquals(
+                "\t.byte ':'", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test()
+    void shouldIgnoreSymbolsInBytesAndFormatCorrectly3() {
+        String sourceCode =
+                ".byte '\"'# Comment";
+        Assertions.assertEquals(
+                "\t.byte '\"'\t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test
+    void shouldFormatMultipleInlineCommentsCorrectly() {
+        String sourceCode =
+                "LABEL:# Comment\n" +
+                "SECOND_LABEL:# Comment";
+        Assertions.assertEquals(
+                "LABEL:       \t# Comment\n" +
+                "SECOND_LABEL:\t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test
+    void shouldFormatMultipleInlineCommentsCorrectly2() {
+        String sourceCode =
+                "addi $t0, $t0, 1# Comment\n" +
+                "j LABEL# Comment";
+        Assertions.assertEquals(
+                "\taddi $t0, $t0, 1\t# Comment\n" +
+                "\tj LABEL         \t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test
+    void shouldFormatMultipleInlineCommentsCorrectly3() {
+        String sourceCode =
+                "LABEL:# Comment\n" +
+                "j LABEL# Comment";
+        Assertions.assertEquals(
+                "LABEL:  \t# Comment\n" +
+                "\tj LABEL\t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test
+    void shouldFormatMultipleInlineCommentsCorrectly4() {
+        String sourceCode =
+                "BIGGER_LABEL:# Comment\n" +
+                "j LABEL# Comment";
+        Assertions.assertEquals(
+                "BIGGER_LABEL:\t# Comment\n" +
+                "\tj LABEL     \t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
+    }
+
+    @Test
+    void shouldFormatMultipleInlineCommentsCorrectly5() {
+        String sourceCode =
+                "LABEL:# Comment\n" +
+                "addi $t0, $t0, 1# Comment\n" +
+                "j LABEL# Comment";
+        Assertions.assertEquals(
+                "LABEL:           \t# Comment\n" +
+                "\taddi $t0, $t0, 1\t# Comment\n" +
+                "\tj LABEL         \t# Comment", AutoLayoutUtilities.autoLayout(sourceCode));
     }
 }

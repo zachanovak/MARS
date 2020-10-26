@@ -7,6 +7,7 @@
                 background-color: #c8ddf2;
                 padding: 10px;
                 display: inline-block;
+                tab-size: 2;
             }
         </style>
     </head>
@@ -104,7 +105,7 @@ jal</pre>
                 <p>Auto Layout can be used at any time to automatically reformat a document to the specified guidelines:</p>
                 <ol>
                     <li>All labels will have no whitespace before them.</li>
-                    <li>Every other type of instruction will have one tab amount of whitespace before them.</li>
+                    <li>Every other type of instruction will have one tab before them.</li>
                     <li>All inline comments will be aligned with each other.</li>
                     <li>Comments on their own line will not be changed (this includes the whitespace before them).</li>
                 </ol>
@@ -122,19 +123,19 @@ lw $t0, a
 LABEL: # Label to jump back to
 addi $t0, $t0, -1 # Subtract one
 bgt $t0, 0, LABEL</pre>
-                <p>This is the program after Auto Layout (with editor tab size of 2) is used.</p>
+                <p>This is the program after Auto Layout is used.</p>
                 <pre>
 ###################
 # Block of comments
 ###################
-  .data
+	.data
 a:
-  .word 128          # This is a word
-  .text
-  lw $t0, a
-LABEL:               # Label to jump back to
-  addi $t0, $t0, -1  # Subtract one
-  bgt $t0, 0, LABEL</pre>
+	.word 128        	# This is a word
+	.text
+	lw $t0, a
+LABEL:            	# Label to jump back to
+	addi $t0, $t0, -1	# Subtract one
+	bgt $t0, 0, LABEL</pre>
             </li>
         </ul>
 

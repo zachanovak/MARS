@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 public class InstructionSubsetTests {
-    // TODO:
-    // Test if saving and getting instruction subset from Settings' preferences works
 
     @BeforeAll
     static void getPreValue() {
