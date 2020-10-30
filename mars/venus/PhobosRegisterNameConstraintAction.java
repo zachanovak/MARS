@@ -1,4 +1,4 @@
-package mars.venus.phobos;
+package mars.venus;
 
 import mars.Globals;
 import mars.Settings;
@@ -21,5 +21,6 @@ import java.awt.event.ActionEvent;
     public void actionPerformed(ActionEvent e) {
         Globals.getSettings().setBooleanSetting(
                 Settings.REGISTER_NAME_CONSTRAINT, ((JCheckBoxMenuItem)e.getSource()).isSelected());
+        mainUI.setMenuState(FileStatus.EDITED);
     }
 }

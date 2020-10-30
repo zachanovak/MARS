@@ -1,7 +1,8 @@
-package mars.venus.phobos;
+package mars.venus;
 
 import mars.Globals;
 import mars.Settings;
+import mars.venus.FileStatus;
 import mars.venus.GuiAction;
 import mars.venus.VenusUI;
 
@@ -21,5 +22,6 @@ public class PhobosCommaConstraintAction extends GuiAction {
     public void actionPerformed(ActionEvent e) {
         Globals.getSettings().setBooleanSetting(
                 Settings.COMMA_CONSTRAINT, ((JCheckBoxMenuItem)e.getSource()).isSelected());
+        mainUI.setMenuState(FileStatus.EDITED);
     }
 }

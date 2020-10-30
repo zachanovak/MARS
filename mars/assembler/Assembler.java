@@ -393,6 +393,12 @@
                   int sourceLine = statement.getSourceLine();
                   TokenList theTokenList = new Tokenizer().tokenizeLine(sourceLine,
                      basicAssembly, errors, false);
+                  // Remove all comma tokens as they mess up instructions
+                  for (int j = theTokenList.size() - 1; j >= 0; j--) {
+                     if (theTokenList.get(j).getType() == TokenTypes.COMMA) {
+                        theTokenList.remove(j);
+                     }
+                  }
                
                // ////////////////////////////////////////////////////////////////////////////
                // If we are using compact memory config and there is a compact expansion, use it
@@ -430,6 +436,12 @@
                      ArrayList instrMatches = this.matchInstruction(newTokenList.get(0));
                      Instruction instr = OperandFormat.bestOperandMatch(newTokenList,
                         instrMatches);
+                     // Remove all comma tokens as they mess up instructions
+                     for (int j = newTokenList.size() - 1; j >= 0; j--) {
+                        if (newTokenList.get(j).getType() == TokenTypes.COMMA) {
+                           newTokenList.remove(j);
+                        }
+                     }
                   // Only first generated instruction is linked to original source
                      ProgramStatement ps = new ProgramStatement(
                         this.fileCurrentlyBeingAssembled,
@@ -663,6 +675,12 @@
                   "Extended (pseudo) instruction or format not permitted.  See Settings."));
             }
             if (OperandFormat.tokenOperandMatch(tokens, inst, errors)) {
+               // Remove all comma tokens as they mess up instructions
+               for (int i = tokens.size() - 1; i >= 0; i--) {
+                  if (tokens.get(i).getType() == TokenTypes.COMMA) {
+                     tokens.remove(i);
+                  }
+               }
                programStatement = new ProgramStatement(this.fileCurrentlyBeingAssembled, source,
                   tokenList, tokens, inst, textAddress.get(), sourceLineNumber);
             // instruction length is 4 for all basic instruction, varies for extended instruction

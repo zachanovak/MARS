@@ -1,7 +1,4 @@
-package mars.venus.phobos;
-
-import mars.venus.GuiAction;
-import mars.venus.VenusUI;
+package mars.venus;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

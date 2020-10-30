@@ -1,4 +1,4 @@
-package mars.venus.phobos;
+package mars.venus;
 
 import mars.Globals;
 import mars.Settings;
@@ -139,6 +139,7 @@ public class ConfigureSubsetDialog extends JDialog {
 
     private void enabledChanged(boolean enabled) {
         Globals.getSettings().setBooleanSetting(Settings.INSTRUCTION_SUBSET, enableCheckBox.isSelected());
+        Globals.getGui().setMenuState(FileStatus.EDITED);
         for (Component comp : leftSidePanel.getComponents()) {
             comp.setEnabled(enabled);
         }

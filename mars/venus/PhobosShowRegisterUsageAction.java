@@ -1,4 +1,4 @@
-package mars.venus.phobos;
+package mars.venus;
 
 import mars.Globals;
 import mars.Settings;
